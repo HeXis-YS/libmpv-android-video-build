@@ -244,6 +244,7 @@ cpuflags=
 	--enable-protocol=tcp \
 	--enable-protocol=tls \
 	--enable-protocol=srt \
+	--enable-protocol=libsrt \
 	\
 	--enable-encoder=mjpeg \
 	--enable-encoder=ljpeg \
