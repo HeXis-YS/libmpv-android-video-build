@@ -1,5 +1,6 @@
 #!/bin/bash -e
 
+. ../../include/depinfo.sh
 . ../../include/path.sh
 
 build=_build$ndk_suffix
@@ -18,7 +19,7 @@ cd $build
 
 echo $CC
 echo $PATH
-ls /home/runner/work/libmpv-android-video-build/libmpv-android-video-build/buildscripts/sdk/android-sdk-linux/ndk//toolchains/llvm/prebuilt/*/bin
+ls /home/runner/work/libmpv-android-video-build/libmpv-android-video-build/buildscripts/sdk/android-sdk-linux/ndk/25.2.9519653/toolchains/llvm/prebuilt/*/bin
 
 cmake .. \
 	-DENABLE_SHARED=ON \
