@@ -23,6 +23,10 @@ cp flavors/default.sh scripts/ffmpeg.sh
 
 # --------------------------------------------------
 
+pwd
+
+ls deps
+
 cd deps/media-kit-android-helper
 
 sudo chmod +x gradlew
@@ -36,6 +40,10 @@ ln -sf "$(pwd)/app/build/outputs/apk/release/lib/x86/libmediakitandroidhelper.so
 ln -sf "$(pwd)/app/build/outputs/apk/release/lib/x86_64/libmediakitandroidhelper.so" "../../../libmpv/src/main/jniLibs/x86_64"
 
 cd ../..
+
+pwd
+
+ls deps/media_kit
 
 # --------------------------------------------------
 
