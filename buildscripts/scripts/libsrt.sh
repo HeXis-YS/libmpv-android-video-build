@@ -18,6 +18,7 @@ cd $build
 
 echo $CC
 echo $PATH
+ls /home/runner/work/libmpv-android-video-build/libmpv-android-video-build/buildscripts/sdk/android-sdk-linux/ndk//toolchains/llvm/prebuilt/*/bin
 
 cmake .. \
 	-DENABLE_SHARED=ON \
