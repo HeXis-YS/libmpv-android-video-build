@@ -6,6 +6,13 @@ on:
       - main
   pull_request:
   workflow_dispatch:
+    inputs:
+      release:
+        description: 'Create a draft release of the build'
+        required: false
+        default: 'false'
+        type: boolean
+
 
 permissions:
   contents: write
@@ -62,7 +69,7 @@ jobs:
           name: artifact
           path: ./output/*
       - uses: softprops/action-gh-release@v1
-        if: github.ref == 'refs/heads/main'
+        if: ${{ github.event.inputs.release == 'true' }}
         with:
           draft: true
           prerelease: false
