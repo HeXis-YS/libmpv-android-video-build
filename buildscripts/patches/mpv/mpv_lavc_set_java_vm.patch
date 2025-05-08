@@ -31,8 +31,8 @@ index 232490d..d7a2842 100644
  #include "common/common.h"
  #include "common/global.h"
  #include "common/msg.h"
-@@ -967,6 +969,10 @@ void mpv_wakeup(mpv_handle *ctx)
-     pthread_mutex_unlock(&ctx->lock);
+@@ -965,6 +967,10 @@ void mpv_wakeup(mpv_handle *ctx)
+     mp_mutex_unlock(&ctx->lock);
  }
  
 +int mpv_lavc_set_java_vm(void *vm) {
