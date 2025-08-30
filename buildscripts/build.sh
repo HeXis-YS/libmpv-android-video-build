@@ -63,7 +63,7 @@ setup_prefix () {
 		ln -s . "$prefix_dir/usr"
 		ln -s . "$prefix_dir/local"
 	fi
-	
+
 	if [ ! -d "$native_dir" ]; then
 		mkdir -p "$native_dir"
 	fi
@@ -95,7 +95,7 @@ CROSSFILE
 build () {
 	if [ ! -d deps/$1 ]; then
 		printf >&2 '\e[1;31m%s\e[m\n' "Target $1 not found"
-		return 1
+		exit 1
 	fi
 	if [ $nodeps -eq 0 ]; then
 		printf >&2 '\e[1;34m%s\e[m\n' "Preparing $1..."
@@ -111,7 +111,7 @@ build () {
 	BUILDSCRIPT=../../scripts/$1.sh
  	sudo chmod +x $BUILDSCRIPT
 	[ $cleanbuild -eq 1 ] && $BUILDSCRIPT clean
-    $BUILDSCRIPT build
+    $BUILDSCRIPT build || exit 1
     popd
 }
 

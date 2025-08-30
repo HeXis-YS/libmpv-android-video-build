@@ -19,7 +19,7 @@ cp flavors/default.sh scripts/ffmpeg.sh
 
 # --------------------------------------------------
 
-./build.sh
+./build.sh || exit 1
 
 # --------------------------------------------------
 
@@ -28,7 +28,7 @@ cd deps/media-kit-android-helper
 sudo chmod +x gradlew
 ./gradlew assembleRelease
 
-unzip -o app/build/outputs/apk/release/app-release.apk -d app/build/outputs/apk/release
+unzip -q -o app/build/outputs/apk/release/app-release.apk -d app/build/outputs/apk/release
 
 ln -sf "$(pwd)/app/build/outputs/apk/release/lib/arm64-v8a/libmediakitandroidhelper.so" "../../../libmpv/src/main/jniLibs/arm64-v8a"
 ln -sf "$(pwd)/app/build/outputs/apk/release/lib/armeabi-v7a/libmediakitandroidhelper.so" "../../../libmpv/src/main/jniLibs/armeabi-v7a"
@@ -56,7 +56,7 @@ cd example
 flutter clean
 flutter build apk --release
 
-unzip -o build/app/outputs/apk/release/app-release.apk -d build/app/outputs/apk/release
+unzip -q -o build/app/outputs/apk/release/app-release.apk -d build/app/outputs/apk/release
 
 cd build/app/outputs/apk/release/
 
@@ -65,20 +65,20 @@ cd build/app/outputs/apk/release/
 rm -r lib/*/libapp.so
 rm -r lib/*/libflutter.so
 
-archs=("arm64-v8a" "armeabi-v7a" "x86" "x86_64")
-pairs=("aarch64-linux-android" "arm-linux-androideabi" "i686-linux-android" "x86_64-linux-android")
+# archs=("arm64-v8a" "armeabi-v7a" "x86" "x86_64")
+# pairs=("aarch64-linux-android" "arm-linux-androideabi" "i686-linux-android" "x86_64-linux-android")
 
-for i in "${!archs[@]}"; do
-    arch=${archs[$i]}
-    pair=${pairs[$i]}
-    cp ../../../../../../../../../prefix/${arch}/lib/{libsrt.so,libmbedcrypto.so,libmbedtls.so,libmbedx509.so} lib/${arch}
-    cp ../../../../../../../../../sdk/android-sdk-linux/ndk/25.2.9519653/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/${pair}/libc++_shared.so lib/${arch}
-done
+# for i in "${!archs[@]}"; do
+#     arch=${archs[$i]}
+#     pair=${pairs[$i]}
+#     cp ../../../../../../../../../prefix/${arch}/lib/{libsrt.so,libmbedcrypto.so,libmbedtls.so,libmbedx509.so} lib/${arch}
+#     cp ../../../../../../../../../sdk/android-sdk-linux/ndk/25.2.9519653/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/${pair}/libc++_shared.so lib/${arch}
+# done
 
-zip -r "default-arm64-v8a.jar"                lib/arm64-v8a
-zip -r "default-armeabi-v7a.jar"              lib/armeabi-v7a
-zip -r "default-x86.jar"                      lib/x86
-zip -r "default-x86_64.jar"                   lib/x86_64
+zip -q -r "default-arm64-v8a.jar"                lib/arm64-v8a
+zip -q -r "default-armeabi-v7a.jar"              lib/armeabi-v7a
+zip -q -r "default-x86.jar"                      lib/x86
+zip -q -r "default-x86_64.jar"                   lib/x86_64
 
 mkdir -p ../../../../../../../../../../output
 
@@ -90,5 +90,5 @@ cd ../../../../../../../../..
 
 # --------------------------------------------------
 
-zip -r debug-symbols-default.zip prefix/*/lib
+zip -q -r debug-symbols-default.zip prefix/*/lib
 cp debug-symbols-default.zip ../output
