@@ -25,7 +25,7 @@ cpuflags=
 
 ../configure \
 	--target-os=android --enable-cross-compile --cross-prefix=$ndk_triple- --ar=$AR --cc=$CC --ranlib=$RANLIB \
-	--arch=${ndk_triple%%-*} --cpu=$cpu --pkg-config=pkg-config \
+	--arch=${ndk_triple%%-*} --cpu=$cpu --pkg-config=pkg-config --nm=llvm-nm \
 	--extra-cflags="-I$prefix_dir/include $cpuflags" --extra-ldflags="-L$prefix_dir/lib" \
 	\
 	--disable-gpl \
@@ -83,6 +83,8 @@ cpuflags=
 	--enable-swscale \
 	--enable-swresample \
 	\
+	--enable-libwebp \
+	\
 	--enable-decoder=flv \
 	--enable-decoder=h263 \
 	--enable-decoder=h263i \
@@ -101,7 +103,6 @@ cpuflags=
 	--enable-decoder=libdav1d \
 	--enable-decoder=theora \
 	--enable-decoder=msmpeg* \
-	--enable-decoder=mjpeg* \
 	--enable-decoder=wmv* \
 	\
 	--enable-decoder=aac* \
@@ -143,7 +144,6 @@ cpuflags=
 	--enable-decoder=vplayer \
 	--enable-decoder=webvtt \
 	--enable-decoder=movtext \
-	--enable-decoder=ccaption \
 	\
 	--enable-demuxer=concat \
 	--enable-demuxer=data \
@@ -160,12 +160,12 @@ cpuflags=
 	--enable-demuxer=hevc \
 	--enable-demuxer=rtsp \
 	--enable-demuxer=mpeg4 \
-	--enable-demuxer=mjpeg* \
 	--enable-demuxer=avi \
 	--enable-demuxer=av1 \
 	--enable-demuxer=matroska \
 	--enable-demuxer=dash \
 	--enable-demuxer=webm_dash_manifest \
+	--enable-muxer=webp \
 	\
 	--enable-demuxer=aac \
 	--enable-demuxer=ac3 \
@@ -192,8 +192,8 @@ cpuflags=
 	--enable-demuxer=xwma \
 	--enable-demuxer=dsf \
 	--enable-demuxer=truehd \
-        --enable-demuxer=dts \
-        --enable-demuxer=dtshd \
+	--enable-demuxer=dts \
+	--enable-demuxer=dtshd \
 	\
 	--enable-demuxer=ass \
 	--enable-demuxer=srt \
@@ -209,7 +209,6 @@ cpuflags=
 	--enable-parser=mpeg4 \
 	--enable-parser=mpeg4video \
 	--enable-parser=mpegvideo \
-	--enable-parser=dvbsub \
 	\
 	--enable-parser=aac* \
 	--enable-parser=ac3 \
@@ -224,9 +223,8 @@ cpuflags=
 	\
 	--enable-filter=overlay \
 	--enable-filter=equalizer \
-	--enable-filter=yadif \
-	--enable-filter=bwdif \
-	--enable-filter=scale \
+	--enable-filter=aresample \
+ 	--enable-filter=dynaudnorm \
 	\
 	--enable-protocol=async \
 	--enable-protocol=cache \
@@ -249,18 +247,12 @@ cpuflags=
 	--enable-protocol=tcp \
 	--enable-protocol=tls \
 	--enable-protocol=srt \
-	--enable-protocol=libsrt \
 	\
-	--enable-encoder=mjpeg \
-	--enable-encoder=ljpeg \
-	--enable-encoder=jpegls \
-	--enable-encoder=jpeg2000 \
 	--enable-encoder=png \
-	--enable-encoder=jpegls \
+	--enable-encoder=libwebp \
+	--enable-encoder=libwebp_anim \
 	\
 	--enable-network \
-	\
-	--enable-libsrt \
 
 make -j$cores
 make DESTDIR="$prefix_dir" install

@@ -6,6 +6,8 @@
 
 mkdir -p deps && cd deps
 
+git config --global advice.detachedHead false
+
 # mbedtls
 [ ! -d mbedtls ] && git clone --depth 1 --branch v$v_mbedtls https://github.com/Mbed-TLS/mbedtls.git mbedtls
 
@@ -42,12 +44,8 @@ mkdir -p deps && cd deps
 # libass
 [ ! -d libass ] && git clone --depth 1 --branch $v_libass https://github.com/libass/libass.git libass
 
-# libsrt
-if [ ! -d libsrt ]; then
-	mkdir libsrt
-	$WGET https://github.com/Haivision/srt/archive/refs/tags/v${v_libsrt}.tar.gz -O - | \
-		tar -xz -C libsrt --strip-components=1
-fi
+# libwebp
+[ ! -d libwebp ] && git clone --depth 1 --branch v$v_libwebp https://github.com/webmproject/libwebp libwebp
 
 # shaderc
 mkdir -p shaderc
