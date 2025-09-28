@@ -64,7 +64,7 @@ echo y | sdkmanager \
 	"platforms;android-35" \
 	"build-tools;${v_sdk_build_tools}" \
 	"ndk;${v_ndk}" \
-	"cmake;3.30.3"
+	"cmake;3.22.1"
 
 # gas-preprocessor
 mkdir -p bin

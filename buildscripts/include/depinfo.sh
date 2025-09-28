@@ -3,7 +3,7 @@
 ## Dependency versions
 
 v_sdk=11076708_latest
-v_ndk=27.1.12297006
+v_ndk=27.2.12479018
 v_sdk_build_tools=35.0.0
 
 v_libass=0.17.3
