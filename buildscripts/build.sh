@@ -58,7 +58,6 @@ buildtype = 'release'
 default_library = 'static'
 wrap_mode = 'nodownload'
 b_ndebug = 'true'
-b_lto = 'true'
 c_args = $OPT_MESON_ARGS
 cpp_args = $OPT_MESON_ARGS
 [binaries]
