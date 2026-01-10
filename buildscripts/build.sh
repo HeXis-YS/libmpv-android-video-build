@@ -27,6 +27,8 @@ loadarch () {
 	export CC=$cc_triple-clang
 	export AS="$CC"
 	export CXX=$cc_triple-clang++
+	export CFLAGS="-O3 -fPIC -DNDEBUG"
+	export CXXFLAGS="-O3 -fPIC -DNDEBUG"
 	export LDFLAGS="-Wl,-O3,--icf=safe -Wl,-z,max-page-size=16384"
 	export AR=llvm-ar
 	export RANLIB=llvm-ranlib
@@ -54,6 +56,9 @@ setup_prefix () {
 buildtype = 'release'
 default_library = 'static'
 wrap_mode = 'nodownload'
+b_ndebug = 'true'
+c_args = ['-O3', '-fPIC', '-DNDEBUG']
+cpp_args = ['-O3', '-fPIC', '-DNDEBUG']
 [binaries]
 c = '$CC'
 cpp = '$CXX'
