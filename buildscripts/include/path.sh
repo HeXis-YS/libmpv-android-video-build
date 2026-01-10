@@ -32,3 +32,5 @@ unset ANDROID_SDK_ROOT ANDROID_NDK_ROOT
 export OPT_FLAGS="-O3 -DNDEBUG"
 export OPT_CFLAGS="-O3 -fPIC -DNDEBUG"
 export OPT_CXXFLAGS="-O3 -fPIC -DNDEBUG"
+# Meson-compatible array format for crossfile
+export OPT_MESON_ARGS="['-O3', '-fPIC', '-DNDEBUG']"

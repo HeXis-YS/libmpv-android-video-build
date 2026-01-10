@@ -57,8 +57,8 @@ buildtype = 'release'
 default_library = 'static'
 wrap_mode = 'nodownload'
 b_ndebug = 'true'
-c_args = ['-O3', '-fPIC', '-DNDEBUG']
-cpp_args = ['-O3', '-fPIC', '-DNDEBUG']
+c_args = $OPT_MESON_ARGS
+cpp_args = $OPT_MESON_ARGS
 [binaries]
 c = '$CC'
 cpp = '$CXX'
