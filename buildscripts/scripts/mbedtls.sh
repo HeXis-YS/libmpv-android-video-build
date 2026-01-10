@@ -28,4 +28,4 @@ cmake .. \
 	-DCMAKE_PLATFORM_NO_VERSIONED_SONAME=ON
 
 make -j$cores
-make CFLAGS=-fPIC CXXFLAGS=-fPIC DESTDIR="$prefix_dir" install
+make CFLAGS="-O3 -fPIC -DNDEBUG" CXXFLAGS="-O3 -fPIC -DNDEBUG" DESTDIR="$prefix_dir" install
