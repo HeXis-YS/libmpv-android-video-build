@@ -67,6 +67,7 @@ cpuflags=
 	--enable-hwaccels \
 	--enable-optimizations \
 	--enable-runtime-cpudetect \
+	--enable-lto \
 	\
 	--enable-mbedtls \
 	\
