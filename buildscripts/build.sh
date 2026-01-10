@@ -30,7 +30,7 @@ loadarch () {
 	export CXX=$cc_triple-clang++
 	export CFLAGS="$OPT_CFLAGS"
 	export CXXFLAGS="$OPT_CXXFLAGS"
-	export LDFLAGS="-flto -Wl,-O3,--icf=safe -Wl,-z,max-page-size=16384"
+	export LDFLAGS="-fuse-ld=lld -flto -Wl,-O3,--icf=safe -Wl,-z,max-page-size=16384"
 	export AR=llvm-ar
 	export RANLIB=llvm-ranlib
 }
