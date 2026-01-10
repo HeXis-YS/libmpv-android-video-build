@@ -18,7 +18,7 @@ mkdir -p _build$ndk_suffix
 cd _build$ndk_suffix
 
 ../configure \
-	CFLAGS="-O3 -fPIC -DNDEBUG" CXXFLAGS="-O3 -fPIC -DNDEBUG" \
+	CFLAGS="$OPT_CFLAGS" CXXFLAGS="$OPT_CXXFLAGS" \
 	--host=$ndk_triple \
 	--with-pic \
 	--disable-asm \
