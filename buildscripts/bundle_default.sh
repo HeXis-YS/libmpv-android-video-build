@@ -27,6 +27,8 @@ echo "chdir media-kit-android-helpe"
 cd deps/media-kit-android-helper || exit 1
 
 sudo chmod +x gradlew
+# Build all ABIs - the external media-kit-android-helper project doesn't properly support
+# the -Pandroid.injected.build.abi filter from command line, so we build all and extract only arm64-v8a
 ./gradlew assembleRelease
 
 unzip -q -o app/build/outputs/apk/release/app-release.apk -d app/build/outputs/apk/release

@@ -27,6 +27,8 @@ cp flavors/encoders-gpl.sh scripts/ffmpeg.sh
 cd deps/media-kit-android-helper
 
 sudo chmod +x gradlew
+# Build all ABIs - the external media-kit-android-helper project doesn't properly support
+# the -Pandroid.injected.build.abi filter from command line, so we build all and extract only arm64-v8a
 ./gradlew assembleRelease
 
 unzip -o app/build/outputs/apk/release/app-release.apk -d app/build/outputs/apk/release
