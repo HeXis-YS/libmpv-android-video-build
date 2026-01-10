@@ -17,25 +17,15 @@ loadarch () {
 	unset CC CXX CPATH LIBRARY_PATH C_INCLUDE_PATH CPLUS_INCLUDE_PATH
 
 	local apilvl=24
-	# ndk_triple: what the toolchain actually is
-	# cc_triple: what Google pretends the toolchain is
-	if [ "$1" == "arm64" ]; then
-		export ndk_suffix=-arm64
-		export ndk_triple=aarch64-linux-android
-		cc_triple=$ndk_triple$apilvl
-		prefix_name=arm64-v8a
-	else
-		echo "Invalid architecture"
-		exit 1
-	fi
+	# arm64-v8a configuration
+	export ndk_suffix=-arm64
+	export ndk_triple=aarch64-linux-android
+	cc_triple=$ndk_triple$apilvl
+	prefix_name=arm64-v8a
 	export prefix_dir="$PWD/prefix/$prefix_name"
 	export native_dir="$PWD/../libmpv/src/main/jniLibs/$prefix_name"
 	export CC=$cc_triple-clang
-	if [[ "$1" == arm* ]]; then
-		export AS="$CC"
-	else
-		export AS="nasm"
-	fi
+	export AS="$CC"
 	export CXX=$cc_triple-clang++
 	export LDFLAGS="-Wl,-O3,--icf=safe -Wl,-z,max-page-size=16384"
 	export AR=llvm-ar
