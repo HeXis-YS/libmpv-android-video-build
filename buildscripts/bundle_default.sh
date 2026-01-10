@@ -31,7 +31,8 @@ sudo chmod +x gradlew
 
 unzip -q -o app/build/outputs/apk/release/app-release.apk -d app/build/outputs/apk/release
 
-ln -sf "$(pwd)/app/build/outputs/apk/release/lib/arm64-v8a/libmediakitandroidhelper.so"   "../../../libmpv/src/main/jniLibs/arm64-v8a"
+mkdir -p "../../../libmpv/src/main/jniLibs/arm64-v8a"
+cp "app/build/outputs/apk/release/lib/arm64-v8a/libmediakitandroidhelper.so" "../../../libmpv/src/main/jniLibs/arm64-v8a/"
 
 cd ../..
 
