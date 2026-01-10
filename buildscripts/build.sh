@@ -2,6 +2,7 @@
 
 cd "$( dirname "${BASH_SOURCE[0]}" )"
 . ./include/depinfo.sh
+. ./include/path.sh
 
 cleanbuild=0
 nodeps=0
