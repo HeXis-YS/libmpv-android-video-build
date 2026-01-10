@@ -49,13 +49,23 @@ fi
 
 flutter pub get
 
-# Configure gradle to only build arm64-v8a
-if [ -f "android/app/build.gradle" ]; then
-  if ! grep -q "ndk.abiFilters" "android/app/build.gradle"; then
+# Configure gradle to only build arm64-v8a in the plugin's android build.gradle
+if [ -f "android/build.gradle" ]; then
+  if ! grep -q "abiFilters" "android/build.gradle"; then
+    # Insert ABI filter configuration into the plugin's build.gradle
+    awk '/android \{/ {print; print "    defaultConfig {"; print "        ndk {"; print "            abiFilters \"arm64-v8a\""; print "        }"; print "    }"; next}1' \
+      "android/build.gradle" > "android/build.gradle.tmp" && \
+      mv "android/build.gradle.tmp" "android/build.gradle"
+  fi
+fi
+
+# Also configure the example app's build.gradle
+if [ -f "example/android/app/build.gradle" ]; then
+  if ! grep -q "ndk.abiFilters" "example/android/app/build.gradle"; then
     # Insert ABI filter configuration into build.gradle
     awk '/defaultConfig \{/ {print; print "        ndk {"; print "            abiFilters \"arm64-v8a\""; print "        }"; next}1' \
-      "android/app/build.gradle" > "android/app/build.gradle.tmp" && \
-      mv "android/app/build.gradle.tmp" "android/app/build.gradle"
+      "example/android/app/build.gradle" > "example/android/app/build.gradle.tmp" && \
+      mv "example/android/app/build.gradle.tmp" "example/android/app/build.gradle"
   fi
 fi
 
