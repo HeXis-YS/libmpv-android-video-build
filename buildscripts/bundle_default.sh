@@ -1,20 +1,12 @@
 # --------------------------------------------------
 
-if [ ! -f "deps" ]; then
-  sudo rm -r deps
-fi
-if [ ! -f "prefix" ]; then
-  sudo rm -r prefix
-fi
+rm -rf deps prefix
 
 ./download.sh || exit 1
 ./patch.sh || exit 1
 
 # --------------------------------------------------
 
-if [ ! -f "scripts/ffmpeg" ]; then
-  rm scripts/ffmpeg.sh
-fi
 cp flavors/default.sh scripts/ffmpeg.sh
 
 # --------------------------------------------------
@@ -23,8 +15,7 @@ cp flavors/default.sh scripts/ffmpeg.sh
 
 # --------------------------------------------------
 
-echo "chdir media-kit-android-helper"
-cd deps/media-kit-android-helper || exit 1
+pushd deps/media-kit-android-helper || exit 1
 
 sudo chmod +x gradlew
 # Build all ABIs - the external media-kit-android-helper project doesn't properly support
@@ -36,11 +27,11 @@ unzip -q -o app/build/outputs/apk/release/app-release.apk -d app/build/outputs/a
 mkdir -p "../../../libmpv/src/main/jniLibs/arm64-v8a"
 cp "app/build/outputs/apk/release/lib/arm64-v8a/libmediakitandroidhelper.so" "../../../libmpv/src/main/jniLibs/arm64-v8a/"
 
-cd ../..
+popd
 
 # --------------------------------------------------
 
-cd deps/media_kit/media_kit_native_event_loop || exit 1
+pushd deps/media_kit/media_kit_native_event_loop || exit 1
 
 flutter create --org com.alexmercerind --template plugin_ffi --platforms=android .
 
@@ -72,14 +63,14 @@ fi
 
 cp -a ../../mpv/include/mpv/. src/include/
 
-cd example || exit 1
+pushd example || exit 1
 
 flutter clean
 flutter build apk --release --target-platform android-arm64
 
 unzip -q -o build/app/outputs/apk/release/app-release.apk -d build/app/outputs/apk/release
 
-cd build/app/outputs/apk/release/ || exit 1
+pushd build/app/outputs/apk/release || exit 1
 
 # --------------------------------------------------
 
@@ -94,7 +85,9 @@ cp *.jar ../../../../../../../../../../output
 
 md5sum *.jar
 
-cd ../../../../../../../../..
+popd
+popd
+popd
 
 # --------------------------------------------------
 
