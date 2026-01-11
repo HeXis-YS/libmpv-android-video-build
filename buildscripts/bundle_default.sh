@@ -5,12 +5,10 @@ set -euo pipefail
 # Helper function to insert ABI filter in build.gradle
 insert_abi_filter() {
 	local gradle_file="$1"
-	local indent="$2"
-	local pattern="$3"
+	local pattern="$2"
 	
 	if [ -f "$gradle_file" ] && ! grep -q "abiFilters" "$gradle_file"; then
-		awk -v indent="$indent" "$pattern" \
-			"$gradle_file" > "$gradle_file.tmp" && \
+		awk "$pattern" "$gradle_file" > "$gradle_file.tmp" && \
 			mv "$gradle_file.tmp" "$gradle_file"
 	fi
 }
@@ -59,10 +57,10 @@ fi
 flutter pub get
 
 # Configure gradle to only build arm64-v8a
-insert_abi_filter "android/build.gradle" "    " \
+insert_abi_filter "android/build.gradle" \
 	'/android \{/ {print; print "    defaultConfig {"; print "        ndk {"; print "            abiFilters \"arm64-v8a\""; print "        }"; print "    }"; next}1'
 
-insert_abi_filter "example/android/app/build.gradle" "        " \
+insert_abi_filter "example/android/app/build.gradle" \
 	'/defaultConfig \{/ {print; print "        ndk {"; print "            abiFilters \"arm64-v8a\""; print "        }"; next}1'
 
 cp -a ../../mpv/include/mpv/. src/include/
