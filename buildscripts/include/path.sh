@@ -1,13 +1,5 @@
 #!/bin/bash
-
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-
-# This build system only supports Linux
-if [[ "$OSTYPE" != linux* ]]; then
-	echo "Error: This build system only supports Linux." >&2
-	echo "OSTYPE detected: $OSTYPE" >&2
-	exit 1
-fi
 
 cores=$(nproc)
 

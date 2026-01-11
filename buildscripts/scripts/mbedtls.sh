@@ -1,20 +1,7 @@
 #!/bin/bash -e
-
-. ../../include/depinfo.sh
-. ../../include/path.sh
+source ../../include/path.sh
 
 build=_build$ndk_suffix
-
-if [ "$1" == "build" ]; then
-	true
-elif [ "$1" == "clean" ]; then
-	rm -rf $build
-	exit 0
-else
-	exit 255
-fi
-
-$0 clean # separate building not supported, always clean
 
 mkdir -p $build
 cd $build
@@ -28,4 +15,4 @@ cmake .. \
 	-DCMAKE_VERBOSE_MAKEFILE=ON
 
 make -j$cores VERBOSE=1
-make DESTDIR="$prefix_dir" install
+DESTDIR="$prefix_dir" make install

@@ -1,5 +1,4 @@
 #!/bin/bash -e
-
 set -euo pipefail
 
 # Helper function to insert ABI filter in build.gradle
@@ -26,17 +25,13 @@ rm -rf deps prefix
 
 # --------------------------------------------------
 
-cp flavors/default.sh scripts/ffmpeg.sh
-
-# --------------------------------------------------
-
 ./build.sh || exit 1
 
 # --------------------------------------------------
 
 pushd deps/media-kit-android-helper || exit 1
 
-sudo chmod +x gradlew
+chmod +x gradlew
 # Build all ABIs - the external media-kit-android-helper project doesn't properly support
 # the -Pandroid.injected.build.abi filter from command line, so we build all and extract only arm64-v8a
 ./gradlew assembleRelease

@@ -1,5 +1,4 @@
 #!/bin/bash -e
-
 ## Dependency versions
 
 v_mpv=0.41.0

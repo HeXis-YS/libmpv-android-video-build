@@ -1,8 +1,7 @@
 #!/bin/bash -e
-
 cd "$( dirname "${BASH_SOURCE[0]}" )"
-. ./include/depinfo.sh
-. ./include/path.sh
+source include/depinfo.sh
+source include/path.sh
 
 cleanbuild=0
 nodeps=0
@@ -10,12 +9,12 @@ target=mpv
 archs=(arm64)
 
 # Get dependencies for a target using indirect variable expansion
-getdeps () {
+getdeps() {
 	varname="dep_${1//-/_}[*]"
 	echo ${!varname}
 }
 
-loadarch () {
+loadarch() {
 	unset CC CXX CPATH LIBRARY_PATH C_INCLUDE_PATH CPLUS_INCLUDE_PATH
 
 	local apilvl=24
@@ -27,13 +26,14 @@ loadarch () {
 	export prefix_dir="$PWD/prefix/$prefix_name"
 	export native_dir="$PWD/../libmpv/src/main/jniLibs/$prefix_name"
 	export CC=$cc_triple-clang
-	export AS="$CC"
+	export AS=$CC
 	export CXX=$cc_triple-clang++
 	export AR=llvm-ar
+	export NM=llvm-nm
 	export RANLIB=llvm-ranlib
 }
 
-setup_prefix () {
+setup_prefix() {
 	if [ ! -d "$prefix_dir" ]; then
 		mkdir -p "$prefix_dir"
 		# enforce flat structure (/usr/local -> /)
@@ -71,7 +71,7 @@ endian = 'little'
 CROSSFILE
 }
 
-build () {
+build() {
 	if [ ! -d deps/$1 ]; then
 		printf >&2 '\e[1;31m%s\e[m\n' "Target $1 not found"
 		exit 1
@@ -93,7 +93,7 @@ build () {
 	popd
 }
 
-usage () {
+usage() {
 	printf '%s\n' \
 		"Usage: build.sh [options] [target]" \
 		"Builds the specified target (default: $target)" \

@@ -1,12 +1,11 @@
 #!/bin/bash -e
-
-. ./include/depinfo.sh
+source ./include/depinfo.sh
 
 set -euo pipefail
 
 GIT_CLONE="git clone --depth 1 --single-branch --no-tags"
 
-mkdir -p deps 
+mkdir -p deps
 pushd deps
 
 # mbedtls

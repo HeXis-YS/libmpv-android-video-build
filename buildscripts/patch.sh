@@ -1,5 +1,4 @@
 #!/bin/bash -e
-
 set -euo pipefail
 
 PATCHES=(patches/*)
