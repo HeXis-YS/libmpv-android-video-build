@@ -86,16 +86,6 @@ cd build/app/outputs/apk/release/ || exit 1
 rm -r lib/*/libapp.so
 rm -r lib/*/libflutter.so
 
-# archs=("arm64-v8a" "armeabi-v7a" "x86" "x86_64")
-# pairs=("aarch64-linux-android" "arm-linux-androideabi" "i686-linux-android" "x86_64-linux-android")
-
-# for i in "${!archs[@]}"; do
-#     arch=${archs[$i]}
-#     pair=${pairs[$i]}
-#     cp ../../../../../../../../../prefix/${arch}/lib/{libsrt.so,libmbedcrypto.so,libmbedtls.so,libmbedx509.so} lib/${arch}
-#     cp ../../../../../../../../../sdk/android-sdk-linux/ndk/25.2.9519653/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/${pair}/libc++_shared.so lib/${arch}
-# done
-
 zip -q -r "default-arm64-v8a.jar"                lib/arm64-v8a
 
 mkdir -p ../../../../../../../../../../output

@@ -31,12 +31,10 @@ if [ -n "$ENCODERS_GPL" ]; then
 else
 	dep_ffmpeg=(mbedtls dav1d libwebp)
 fi
-dep_freetype2=()
+dep_freetype=()
 dep_fribidi=()
 dep_harfbuzz=()
 dep_libass=(freetype fribidi harfbuzz)
-dep_lua=()
-dep_shaderc=()
 dep_libplacebo=()
 if [ -n "$ENCODERS_GPL" ]; then
 	dep_mpv=(ffmpeg libass libplacebo fftools_ffi)
