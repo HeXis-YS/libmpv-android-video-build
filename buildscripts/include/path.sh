@@ -2,6 +2,13 @@
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd .. && pwd )"
 
+# This build system only supports Linux
+if [[ "$OSTYPE" != "linux-gnu"* ]]; then
+	echo "Error: This build system only supports Linux." >&2
+	echo "OSTYPE detected: $OSTYPE" >&2
+	exit 1
+fi
+
 [ -z "$cores" ] && cores=$(grep -c ^processor /proc/cpuinfo)
 cores=${cores:-4}
 
