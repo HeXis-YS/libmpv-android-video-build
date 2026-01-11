@@ -2,18 +2,7 @@
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd .. && pwd )"
 
-os=linux
-[[ "$OSTYPE" == "darwin"* ]] && os=mac
-export os
-
-if [ "$os" == "mac" ]; then
-	[ -z "$cores" ] && cores=$(sysctl -n hw.ncpu)
-	# various things rely on GNU behaviour
-	export INSTALL=`which ginstall`
-	export SED=gsed
-else
-	[ -z "$cores" ] && cores=$(grep -c ^processor /proc/cpuinfo)
-fi
+[ -z "$cores" ] && cores=$(grep -c ^processor /proc/cpuinfo)
 cores=${cores:-4}
 
 # configure pkg-config paths if inside buildscripts
@@ -25,7 +14,7 @@ fi
 
 toolchain=$(echo "$DIR/sdk/android-sdk-linux/ndk/$v_ndk/toolchains/llvm/prebuilt/"*)
 export PATH="$toolchain/bin:$DIR/sdk/android-sdk-linux/ndk/$v_ndk:$DIR/sdk/bin:$PATH"
-export ANDROID_HOME="$DIR/sdk/android-sdk-$os"
+export ANDROID_HOME="$DIR/sdk/android-sdk-linux"
 unset ANDROID_SDK_ROOT ANDROID_NDK_ROOT
 
 # Common optimization flags for all builds
