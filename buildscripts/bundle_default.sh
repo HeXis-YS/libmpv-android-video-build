@@ -8,8 +8,12 @@ insert_abi_filter() {
 	local pattern="$2"
 	
 	if [ -f "$gradle_file" ] && ! grep -q "abiFilters" "$gradle_file"; then
-		awk "$pattern" "$gradle_file" > "$gradle_file.tmp" && \
+		if awk "$pattern" "$gradle_file" > "$gradle_file.tmp"; then
 			mv "$gradle_file.tmp" "$gradle_file"
+		else
+			rm -f "$gradle_file.tmp"
+			return 1
+		fi
 	fi
 }
 
