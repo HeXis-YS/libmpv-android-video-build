@@ -29,9 +29,6 @@ loadarch () {
 	export CC=$cc_triple-clang
 	export AS="$CC"
 	export CXX=$cc_triple-clang++
-	export CFLAGS="$OPT_CFLAGS"
-	export CXXFLAGS="$OPT_CXXFLAGS"
-	export LDFLAGS="-fuse-ld=lld -flto -Wl,-O3,--icf=safe -Wl,-z,max-page-size=16384"
 	export AR=llvm-ar
 	export RANLIB=llvm-ranlib
 }
@@ -59,8 +56,6 @@ buildtype = 'release'
 default_library = 'static'
 wrap_mode = 'nodownload'
 b_ndebug = 'true'
-c_args = $OPT_MESON_ARGS
-cpp_args = $OPT_MESON_ARGS
 [binaries]
 c = '$CC'
 cpp = '$CXX'
