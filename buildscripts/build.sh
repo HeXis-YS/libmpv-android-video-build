@@ -32,6 +32,9 @@ loadarch() {
 	export AR=llvm-ar
 	export NM=llvm-nm
 	export RANLIB=llvm-ranlib
+	export MESON_SETUP="meson setup $build_dir --cross-file $prefix_dir/crossfile.txt"
+	export MAKE="make -j$cores V=1 VERBOSE=1"
+	export NINJA="ninja -v -j$cores -C $build_dir"
 }
 
 setup_prefix() {
