@@ -14,7 +14,7 @@ pushd $build_dir
 	--disable-shared \
 	--disable-require-system-font-provider
 
-$MAKE
-DESTDIR="$prefix_dir" $MAKE install
+$_MAKE
+DESTDIR="$prefix_dir" $_MAKE install
 
 popd

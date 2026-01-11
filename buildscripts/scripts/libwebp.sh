@@ -13,7 +13,7 @@ cmake .. \
 	-DCMAKE_PLATFORM_NO_VERSIONED_SONAME=ON \
 	-DCMAKE_VERBOSE_MAKEFILE=ON
 
-$MAKE
-DESTDIR="$prefix_dir" $MAKE install
+$_MAKE
+DESTDIR="$prefix_dir" $_MAKE install
 
 popd

@@ -2,12 +2,12 @@
 source ../../include/path.sh
 
 unset CC CXX
-$MESON_SETUP \
+$_MESON \
 	-Dvulkan=disabled \
 	-Ddemos=false
 
-$NINJA
-DESTDIR="$prefix_dir" $NINJA install
+$_NINJA
+DESTDIR="$prefix_dir" $_NINJA install
 
 # add missing library for static linking
 # this isn't "-lstdc++" due to a meson bug: https://github.com/mesonbuild/meson/issues/11300

@@ -241,7 +241,7 @@ cpu=armv8-a
 	\
 	--enable-network \
 
-$MAKE
-DESTDIR="$prefix_dir" $MAKE install
+$_MAKE
+DESTDIR="$prefix_dir" $_MAKE install
 
 popd
