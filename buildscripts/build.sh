@@ -22,6 +22,7 @@ loadarch() {
 	export ndk_suffix=-arm64
 	export ndk_triple=aarch64-linux-android
 	cc_triple=$ndk_triple$apilvl
+	export build_dir="_build$ndk_suffix"
 	prefix_name=arm64-v8a
 	export prefix_dir="$PWD/prefix/$prefix_name"
 	export native_dir="$PWD/../libmpv/src/main/jniLibs/$prefix_name"

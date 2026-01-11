@@ -1,8 +1,8 @@
 #!/bin/bash -e
 source ../../include/path.sh
 
-mkdir -p _build$ndk_suffix
-cd _build$ndk_suffix
+mkdir -p $build_dir
+pushd $build_dir
 
 cpu=armv8-a
 
@@ -243,3 +243,5 @@ cpu=armv8-a
 
 make -j$cores V=1
 DESTDIR="$prefix_dir" make install
+
+popd

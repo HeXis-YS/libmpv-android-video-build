@@ -1,10 +1,8 @@
 #!/bin/bash -e
 source ../../include/path.sh
 
-build=_build$ndk_suffix
-
-mkdir -p $build
-cd $build
+mkdir -p $build_dir
+pushd $build_dir
 
 cmake .. \
 	-DENABLE_TESTING=OFF \
@@ -16,3 +14,5 @@ cmake .. \
 
 make -j$cores VERBOSE=1
 DESTDIR="$prefix_dir" make install
+
+popd

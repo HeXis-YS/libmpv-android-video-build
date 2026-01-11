@@ -3,8 +3,8 @@ source ../../include/path.sh
 
 ./autogen.sh
 
-mkdir -p _build$ndk_suffix
-cd _build$ndk_suffix
+mkdir -p $build_dir
+pushd $build_dir
 
 ../configure \
 	--host=$ndk_triple \
@@ -16,3 +16,5 @@ cd _build$ndk_suffix
 
 make -j$cores V=1
 DESTDIR="$prefix_dir" make install
+
+popd
