@@ -14,10 +14,17 @@ else
 	exit 255
 fi
 
-unset CC CXX # meson wants these unset
+mkdir -p $build
+cd $build
 
-meson setup $build --cross-file "$prefix_dir"/crossfile.txt \
-	-Ddefault_library=static
+cmake .. \
+	-DENABLE_SHARED=ON \
+	-DENABLE_STATIC=OFF \
+	-DENABLE_ENCRYPTION=ON \
+	-DCMAKE_PREFIX_PATH="$prefix_dir" \
+	-DUSE_ENCLIB=mbedtls \
+	-DCMAKE_PLATFORM_NO_VERSIONED_SONAME=ON \
+	-DCMAKE_VERBOSE_MAKEFILE=ON
 
-ninja -v -C $build -j$cores
-DESTDIR="$prefix_dir" ninja -v -C $build install
+make -j$cores VERBOSE=1
+make DESTDIR="$prefix_dir" install
