@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DIR="$(dirname $(realpath $0))"
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 # This build system only supports Linux
 if [[ "$OSTYPE" != linux* ]]; then

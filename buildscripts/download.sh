@@ -6,8 +6,6 @@ set -euo pipefail
 
 GIT_CLONE="git clone --depth 1 --single-branch --no-tags"
 
-# git config --global advice.detachedHead false
-
 mkdir -p deps 
 pushd deps
 

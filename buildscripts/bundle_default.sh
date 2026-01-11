@@ -1,3 +1,20 @@
+#!/bin/bash -e
+
+set -euo pipefail
+
+# Helper function to insert ABI filter in build.gradle
+insert_abi_filter() {
+	local gradle_file="$1"
+	local indent="$2"
+	local pattern="$3"
+	
+	if [ -f "$gradle_file" ] && ! grep -q "abiFilters" "$gradle_file"; then
+		awk -v indent="$indent" "$pattern" \
+			"$gradle_file" > "$gradle_file.tmp" && \
+			mv "$gradle_file.tmp" "$gradle_file"
+	fi
+}
+
 # --------------------------------------------------
 
 rm -rf deps prefix
@@ -41,25 +58,12 @@ fi
 
 flutter pub get
 
-# Configure gradle to only build arm64-v8a in the plugin's android build.gradle
-if [ -f "android/build.gradle" ]; then
-  if ! grep -q "abiFilters" "android/build.gradle"; then
-    # Insert ABI filter configuration into the plugin's build.gradle
-    awk '/android \{/ {print; print "    defaultConfig {"; print "        ndk {"; print "            abiFilters \"arm64-v8a\""; print "        }"; print "    }"; next}1' \
-      "android/build.gradle" > "android/build.gradle.tmp" && \
-      mv "android/build.gradle.tmp" "android/build.gradle"
-  fi
-fi
+# Configure gradle to only build arm64-v8a
+insert_abi_filter "android/build.gradle" "    " \
+	'/android \{/ {print; print "    defaultConfig {"; print "        ndk {"; print "            abiFilters \"arm64-v8a\""; print "        }"; print "    }"; next}1'
 
-# Also configure the example app's build.gradle
-if [ -f "example/android/app/build.gradle" ]; then
-  if ! grep -q "ndk.abiFilters" "example/android/app/build.gradle"; then
-    # Insert ABI filter configuration into build.gradle
-    awk '/defaultConfig \{/ {print; print "        ndk {"; print "            abiFilters \"arm64-v8a\""; print "        }"; next}1' \
-      "example/android/app/build.gradle" > "example/android/app/build.gradle.tmp" && \
-      mv "example/android/app/build.gradle.tmp" "example/android/app/build.gradle"
-  fi
-fi
+insert_abi_filter "example/android/app/build.gradle" "        " \
+	'/defaultConfig \{/ {print; print "        ndk {"; print "            abiFilters \"arm64-v8a\""; print "        }"; next}1'
 
 cp -a ../../mpv/include/mpv/. src/include/
 
