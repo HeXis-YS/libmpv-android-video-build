@@ -11,7 +11,7 @@ set -euo pipefail
 
 if [ $TRAVIS -eq 0 ]; then
 	hash yum &>/dev/null && {
-		sudo yum install autoconf pkgconfig libtool ninja-build unzip \
+		sudo yum install autoconf pkgconfig libtool ninja-build \
 		python3-pip python3-setuptools unzip wget;
 		python3 -m pip install meson jsonschema jinja2; }
 	apt-get -v &>/dev/null && {
