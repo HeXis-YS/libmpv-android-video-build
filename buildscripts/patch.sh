@@ -2,6 +2,7 @@
 set -euo pipefail
 
 PATCHES=(patches/*)
+ROOT=$(pwd)
 
 for dep_path in "${PATCHES[@]}"; do
     if [ -d "$dep_path" ]; then
@@ -14,7 +15,7 @@ for dep_path in "${PATCHES[@]}"; do
             echo Applying $patch
             git apply "$ROOT/$patch"
         done
-        popd $ROOT
+        popd
     fi
 done
 
