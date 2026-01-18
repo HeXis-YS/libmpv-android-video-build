@@ -1,12 +1,10 @@
 #!/bin/bash -e
-source ../../include/path.sh
-
 mkdir -p $build_dir
 pushd $build_dir
 
 cmake .. \
-	-DENABLE_SHARED=ON \
-	-DENABLE_STATIC=OFF \
+	-DENABLE_SHARED=OFF \
+	-DENABLE_STATIC=ON \
 	-DENABLE_ENCRYPTION=ON \
 	-DCMAKE_PREFIX_PATH="$prefix_dir" \
 	-DUSE_ENCLIB=mbedtls \
