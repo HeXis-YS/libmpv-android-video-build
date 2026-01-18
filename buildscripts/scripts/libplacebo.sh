@@ -1,7 +1,7 @@
 #!/bin/bash -e
 unset CC CXX
 $_MESON \
-	-Dvulkan=disabled \
+	-Dvk-proc-addr=enabled \
 	-Ddemos=false
 
 $_NINJA

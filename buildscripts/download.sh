@@ -50,6 +50,9 @@ $GIT_CLONE -b main https://github.com/media-kit/media-kit-android-helper.git med
 # media_kit
 $GIT_CLONE -b version_1.2.5 https://github.com/bggRGjQaUbCoE/media-kit.git media_kit &
 
+# shaderc
+mkdir -p shaderc
+
 wait
 
 popd
