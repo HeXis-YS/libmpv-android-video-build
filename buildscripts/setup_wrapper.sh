@@ -1,6 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+pushd $(dirname $ANDROID_NDK_LATEST_HOME)
+[ -d 26.1.10909125 ] && sudo rm -rf 26.1.10909125
+[ -d 27.0.12077973 ] && sudo rm -rf 27.0.12077973
+ln -sf $(basename $ANDROID_NDK_LATEST_HOME) 26.1.10909125
+ln -sf $(basename $ANDROID_NDK_LATEST_HOME) 27.0.12077973
+popd
+
 WRAPPER_SRC="$BUILDSCRIPTS_DIR/ndk-wrapper.py"
 
 BIN_DIR="$ANDROID_NDK_LATEST_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin"
