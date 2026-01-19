@@ -16,10 +16,14 @@ class CompilerWrapper:
             return
         self.args = [a for a in self.args if not a.startswith("-march=")]
         prepend_flags = [f"--target={self.target}"]
-        append_flags = ["-w", "-g0"]
-        append_flags += ["-O3", "-ffast-math", "-fno-stack-protector", "-fno-plt", "-flto=full"]
+        append_flags = ["-w"]
+        append_flags += ["-O3", "-fno-stack-protector", "-fno-plt"]
+        append_flags += ["-ffast-math", "-lm"]
+        append_flags += ["-flto=full", "-Wl,--lto-O3,--lto-partitions=1"]
+        append_flags += ["-ffunction-sections", "-fdata-sections", "-Wl,--gc-sections"]
         append_flags += ["-fPIC"]
-        append_flags += ["-s","-fuse-ld=lld", "-lm"]
+        append_flags += ["-g0", "-s"]
+        append_flags += ["-fuse-ld=lld", "-Wl,-O2,--icf=all,--as-needed,--sort-common"]
         env_prepend = os.getenv("NDK_WRAPPER_PREPEND")
         if env_prepend:
             prepend_flags += env_prepend.split()
