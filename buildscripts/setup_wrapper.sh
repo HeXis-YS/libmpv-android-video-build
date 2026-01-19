@@ -4,8 +4,10 @@ set -euo pipefail
 pushd $(dirname $ANDROID_NDK_LATEST_HOME)
 [ -d 26.1.10909125 ] && sudo rm -rf 26.1.10909125
 [ -d 27.0.12077973 ] && sudo rm -rf 27.0.12077973
+[ -d 28.2.13676358 ] && sudo rm -rf 28.2.13676358
 ln -sf $(basename $ANDROID_NDK_LATEST_HOME) 26.1.10909125
 ln -sf $(basename $ANDROID_NDK_LATEST_HOME) 27.0.12077973
+ln -sf $(basename $ANDROID_NDK_LATEST_HOME) 28.2.13676358
 popd
 
 WRAPPER_SRC="$BUILDSCRIPTS_DIR/ndk-wrapper.py"
