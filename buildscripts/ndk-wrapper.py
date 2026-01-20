@@ -14,16 +14,17 @@ class CompilerWrapper:
     def parse_custom_flags(self):
         if len(self.args) > 0 and self.args[0] == "-cc1":
             return
-        self.args = [a for a in self.args if not a.startswith("-march=")]
         prepend_flags = [f"--target={self.target}"]
         append_flags = ["-Wno-unused-command-line-argument"]
-        append_flags += ["-O3", "-fno-stack-protector", "-fno-plt"]
-        append_flags += ["-ffast-math", "-lm"]
-        append_flags += ["-flto=full", "-Wl,--lto-O3,--lto-partitions=1"]
-        append_flags += ["-ffunction-sections", "-fdata-sections", "-Wl,--gc-sections"]
-        append_flags += ["-fPIC"]
-        append_flags += ["-g0", "-s"]
-        append_flags += ["-fuse-ld=lld", "-Wl,-O2,--icf=all,--as-needed,--sort-common,--pack-dyn-relocs=relr"]
+        if not os.getenv("NDK_WRAPPER_DISABLED"):
+            self.args = [a for a in self.args if not a.startswith("-march=")]
+            append_flags += ["-O3", "-fno-stack-protector", "-fno-plt"]
+            append_flags += ["-ffast-math", "-lm"]
+            append_flags += ["-flto=full", "-Wl,--lto-O3,--lto-partitions=1"]
+            append_flags += ["-ffunction-sections", "-fdata-sections", "-Wl,--gc-sections"]
+            append_flags += ["-fPIC"]
+            append_flags += ["-g0", "-s"]
+            append_flags += ["-fuse-ld=lld", "-Wl,-O2,--icf=all,--as-needed,--sort-common,--pack-dyn-relocs=relr"]
         env_prepend = os.getenv("NDK_WRAPPER_PREPEND")
         if env_prepend:
             prepend_flags += env_prepend.split()
