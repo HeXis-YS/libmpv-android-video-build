@@ -1,4 +1,9 @@
 #!/bin/bash -e
+DAV1D_CONFIG=
+if [ -n "$ENABLE_DAV1D" ]; then
+	DAV1D_CONFIG="--enable-libdav1d --enable-decoder=libdav1d"
+fi
+
 mkdir -p $build_dir
 pushd $build_dir
 
@@ -61,7 +66,7 @@ cpu=armv8-a
 	\
 	--enable-mbedtls \
 	\
-	--enable-libdav1d \
+	$DAV1D_CONFIG \
 	\
 	--enable-avutil \
 	--enable-avcodec \
@@ -80,7 +85,6 @@ cpu=armv8-a
 	--enable-decoder=vp9* \
 	--enable-decoder=hevc* \
 	--enable-decoder=av1* \
-	--enable-decoder=libdav1d \
 	\
 	--enable-decoder=aac* \
 	--enable-decoder=ac3 \

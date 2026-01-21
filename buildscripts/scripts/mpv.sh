@@ -12,6 +12,11 @@ END
 
 unset CC CXX # meson wants these unset
 
+VULKAN_CONFIG="-Dvulkan=disabled"
+if [ -n "$ENABLE_VULKAN" ]; then
+	VULKAN_CONFIG="-Dvulkan=enabled"
+fi
+
 $_MESON \
 	--prefer-static \
 	--default-library shared \
@@ -21,9 +26,9 @@ $_MESON \
 	-Dlua=disabled \
 	-Dcplayer=false \
 	-Diconv=disabled \
-	-Dvulkan=enabled \
 	-Dmanpage-build=disabled \
-	-Dcplugins=disabled
+	-Dcplugins=disabled \
+	$VULKAN_CONFIG
 
 $_NINJA
 DESTDIR="$prefix_dir" $_NINJA install

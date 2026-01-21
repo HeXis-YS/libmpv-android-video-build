@@ -17,13 +17,21 @@ v_libplacebo=7.351.0
 # I would've used a dict but putting arrays in a dict is not a thing
 
 dep_mpv=(ffmpeg libass libplacebo)
-	dep_ffmpeg=(mbedtls dav1d libwebp)
-		dep_mbedtls=()
+if [ -n "$ENABLE_DAV1D" ]; then
+    dep_ffmpeg=(mbedtls dav1d libwebp)
 		dep_dav1d=()
+else
+	dep_ffmpeg=(mbedtls libwebp)
+fi
+		dep_mbedtls=()
 		dep_libwebp=()
 	dep_libass=(freetype fribidi harfbuzz)
 		dep_freetype=()
 		dep_fribidi=()
 		dep_harfbuzz=()
+if [ -n "$ENABLE_VULKAN" ]; then
 	dep_libplacebo=(shaderc)
 		dep_shaderc=()
+else
+	dep_libplacebo=()
+fi

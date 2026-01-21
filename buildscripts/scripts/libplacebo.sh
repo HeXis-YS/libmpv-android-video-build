@@ -1,8 +1,14 @@
 #!/bin/bash -e
 unset CC CXX
+
+VULKAN_CONFIG="-Dvulkan=disabled"
+if [ -n "$ENABLE_VULKAN" ]; then
+	VULKAN_CONFIG="-Dvk-proc-addr=enabled"
+fi
+
 $_MESON \
-	-Dvk-proc-addr=enabled \
-	-Ddemos=false
+	-Ddemos=false \
+	$VULKAN_CONFIG
 
 $_NINJA
 DESTDIR="$prefix_dir" $_NINJA install
