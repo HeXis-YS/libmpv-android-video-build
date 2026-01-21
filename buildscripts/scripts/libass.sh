@@ -1,18 +1,8 @@
 #!/bin/bash -e
-./autogen.sh
+unset CC CXX # meson wants these unset
 
-mkdir -p $build_dir
-pushd $build_dir
+$_MESON \
+	-Drequire-system-font-provider=false
 
-../configure \
-	--host=$ndk_triple \
-	--with-pic \
-	--disable-asm \
-	--enable-static\
-	--disable-shared \
-	--disable-require-system-font-provider
-
-$_MAKE
-DESTDIR="$prefix_dir" $_MAKE install
-
-popd
+$_NINJA
+DESTDIR="$prefix_dir" $_NINJA install

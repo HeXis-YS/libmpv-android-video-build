@@ -26,6 +26,7 @@ loadarch() {
 	export NM=llvm-nm
 	export RANLIB=llvm-ranlib
 
+	export _CMAKE="cmake -B $build_dir -S . -G Ninja -DCMAKE_PREFIX_PATH=$prefix_dir -DCMAKE_BUILD_TYPE=Release"
 	export _MESON="meson setup $build_dir --cross-file $prefix_dir/crossfile.txt"
 	export _MAKE="make -j$(nproc)"
 	export _NINJA="ninja -j$(nproc) -C $build_dir"
@@ -63,7 +64,7 @@ cpp = '$CXX'
 ar = '$AR'
 nm = '$NM'
 ranlib = '$RANLIB'
-strip = 'llvm-strip'
+strip = 'llvm-strip -s'
 pkg-config = 'pkg-config'
 [host_machine]
 system = 'android'
