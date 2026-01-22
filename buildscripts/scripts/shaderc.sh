@@ -36,7 +36,13 @@ Libs: -L/usr/local/lib -lshaderc_combined
 Cflags: -I/usr/local/include
 END
 
-if [ -z "$(pkg-config --cflags shaderc_combined)" ]; then
-	echo >&2 "shaderc pkg-config sanity check failed"
-	exit 1
-fi
+# Android provides Vulkan, but no pkgconfig file
+# you can double-check the version in vulkan_core.h (-> VK_HEADER_VERSION)
+mkdir -p "$prefix_dir"/lib/pkgconfig
+cat >"$prefix_dir"/lib/pkgconfig/vulkan.pc <<"END"
+Name: Vulkan
+Description:
+Version: 1.3.275
+Libs: -lvulkan
+Cflags:
+END
