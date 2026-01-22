@@ -68,7 +68,9 @@ cpu=armv8-a
 	--enable-network \
 	--enable-protocol=file \
 	--enable-protocol=https \
-	--enable-protocol=httpproxy
+	--enable-protocol=httpproxy \
+	\
+	$CUSTOM_FFMPEG_OPTIONS
 
 $_MAKE
 DESTDIR="$prefix_dir" $_MAKE install
