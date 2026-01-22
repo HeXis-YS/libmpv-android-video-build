@@ -50,7 +50,7 @@ cpu=armv8-a
 	$DAV1D_CONFIG \
 	\
 	--enable-demuxer=flv \
-	--enable-demuxer=hls \
+	--enable-demuxer=mov \
 	\
 	--enable-decoder=webvtt \
 	--enable-demuxer=webvtt \
@@ -66,7 +66,6 @@ cpu=armv8-a
 	\
 	--enable-mbedtls \
 	--enable-network \
-	--enable-protocol=hls \
 	--enable-protocol=https \
 	--enable-protocol=httpproxy
 

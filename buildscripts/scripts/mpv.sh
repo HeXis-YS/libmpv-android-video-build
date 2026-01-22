@@ -21,13 +21,12 @@ $_MESON \
 	--prefer-static \
 	--default-library shared \
 	-Dgpl=false \
-	-Dlibmpv=true \
-	-Dbuild-date=false \
-	-Dlua=disabled \
 	-Dcplayer=false \
+	-Dbuild-date=false \
 	-Diconv=disabled \
-	-Dmanpage-build=disabled \
+	-Dlua=disabled \
 	-Dcplugins=disabled \
+	-Dmanpage-build=disabled \
 	$VULKAN_CONFIG
 
 $_NINJA

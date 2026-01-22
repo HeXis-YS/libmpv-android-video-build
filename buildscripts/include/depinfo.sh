@@ -18,7 +18,7 @@ v_libplacebo=7.351.0
 
 dep_mpv=(ffmpeg libass libplacebo)
 if [ -n "$ENABLE_DAV1D" ]; then
-    dep_ffmpeg=(mbedtls dav1d libwebp)
+	dep_ffmpeg=(dav1d mbedtls libwebp)
 		dep_dav1d=()
 else
 	dep_ffmpeg=(mbedtls libwebp)
