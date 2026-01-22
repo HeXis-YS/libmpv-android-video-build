@@ -66,6 +66,7 @@ cpu=armv8-a
 	\
 	--enable-mbedtls \
 	--enable-network \
+	--enable-protocol=file \
 	--enable-protocol=https \
 	--enable-protocol=httpproxy
 
