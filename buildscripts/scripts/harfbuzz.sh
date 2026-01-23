@@ -6,5 +6,5 @@ $_MESON \
 	-Ddocs=disabled \
 	-Dutilities=disabled
 
-$_NINJA
+NDK_WRAPPER_APPEND=-Oz $_NINJA
 DESTDIR="$prefix_dir" $_NINJA install

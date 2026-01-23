@@ -10,7 +10,7 @@ pushd $build_dir
 	--disable-shared \
 	--disable-require-system-font-provider
 
-$_MAKE
+NDK_WRAPPER_APPEND=-Oz $_MAKE
 DESTDIR="$prefix_dir" $_MAKE install
 
 popd
