@@ -12,7 +12,7 @@ class CompilerWrapper:
         self.real_compiler = Path(__file__).resolve().parent / wrapper_name[1]
 
     def parse_custom_flags(self):
-        if len(self.args) > 0 and self.args[0] == "-cc1":
+        if len(self.args) == 0 or "-cc1" in self.args or "-cc1as" in self.args:
             return
         prepend_flags = [f"--target={self.target}"]
         append_flags = ["-Wno-unused-command-line-argument"]
