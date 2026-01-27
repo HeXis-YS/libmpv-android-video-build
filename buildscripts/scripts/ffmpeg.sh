@@ -44,7 +44,7 @@ cpu=armv8-a
 	--enable-decoder=h264_mediacodec \
 	--enable-decoder=hevc_mediacodec \
 	--enable-decoder=av1_mediacodec \
-	--enable-decoder=aac \
+	--enable-decoder=aac_mediacodec \
 	--enable-decoder=flac \
 	\
 	$DAV1D_CONFIG \
