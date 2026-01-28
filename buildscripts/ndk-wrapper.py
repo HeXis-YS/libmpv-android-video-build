@@ -15,12 +15,13 @@ class CompilerWrapper:
         if len(self.args) == 0 or "-cc1" in self.args or "-cc1as" in self.args:
             return
         prepend_flags = [f"--target={self.target}"]
-        append_flags = ["-Wno-unused-command-line-argument"]
+        append_flags = []
         if not os.getenv("NDK_WRAPPER_DISABLED"):
             self.args = [a for a in self.args if not a.startswith("-march=")]
+            append_flags += ["-Wno-error", "-Wno-unused-command-line-argument"]
             append_flags += ["-O3", "-fno-stack-protector", "-fno-plt"]
             append_flags += ["-ffast-math", "-lm"]
-            append_flags += ["-flto=full", "-Wl,--lto-O3,--lto-partitions=1"]
+            append_flags += ["-flto=full", "-fwhole-program-vtables", "-fvirtual-function-elimination", "-Wl,--lto-O3,--lto-partitions=1"]
             append_flags += ["-ffunction-sections", "-fdata-sections", "-Wl,--gc-sections"]
             append_flags += ["-fPIC"]
             append_flags += ["-g0", "-s"]
