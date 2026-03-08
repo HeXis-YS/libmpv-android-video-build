@@ -24,16 +24,44 @@ class CompilerWrapper:
     def __init__(self, argv):
         self.argv0 = argv[0]
         self.args = argv[1:]
+        compiler_name = self.detect_compiler_name(Path(self.argv0).name)
+        self.real_compiler = self.resolve_real_compiler(compiler_name)
 
-        wrapper_name = Path(self.argv0).name.rsplit(sep="-", maxsplit=1)
-        self.target = wrapper_name[0]
-        self.real_compiler = Path(__file__).resolve().parent / wrapper_name[1]
+    @staticmethod
+    def detect_compiler_name(invocation_name):
+        if invocation_name.endswith("-clang++"):
+            return "clang++"
+        if invocation_name.endswith("-clang"):
+            return "clang"
+        return invocation_name
+
+    @staticmethod
+    def resolve_real_compiler(compiler_name):
+        bin_dir = Path(__file__).resolve().parent
+        backup = bin_dir / f"{compiler_name}_"
+        if backup.exists():
+            return backup
+        return bin_dir / compiler_name
+
+    def check_target(self):
+        i = len(self.args) - 1
+        while i >= 0:
+            arg = self.args[i]
+            if arg.startswith("-target="):
+                value = arg.split("=", 1)[1]
+                return value.startswith("aarch64")
+            elif arg == "-target":
+                if i + 1 < len(self.args):
+                    return self.args[i + 1].startswith("aarch64")
+                return False
+            i -= 1
+        return False
 
     def should_skip_customization(self):
-        return len(self.args) == 0 or "-cc1" in self.args or "-cc1as" in self.args
+        return len(self.args) == 0 or "-cc1" in self.args or "-cc1as" in self.args or not self.check_target()
 
     def build_prepend_flags(self):
-        return [f"--target={self.target}", *split_env_flags("NDK_WRAPPER_PREPEND")]
+        return [*split_env_flags("NDK_WRAPPER_PREPEND")]
 
     def build_append_flags(self):
         append_flags = []

@@ -27,22 +27,26 @@ install_wrapper() {
 	local wrapper_src="$BUILDSCRIPTS_DIR/ndk-wrapper.py"
 	local bin_dir="$ANDROID_NDK_LATEST_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin"
 	local wrapper_dst="$bin_dir/ndk-wrapper.py"
+	local tool tool_path backup_path
 
 	install -m 0755 "$wrapper_src" "$wrapper_dst"
 	printf 'Installed wrapper: %s\n' "$wrapper_dst"
 
-	shopt -s nullglob
-	for f in "$bin_dir"/aarch64-linux-android*; do
-		# Skip already-backed-up files.
-		[[ "$f" == *_ ]] && continue
+	for tool in clang clang++; do
+		tool_path="$bin_dir/$tool"
+		backup_path="${tool_path}_"
 
-		local bak="${f}_"
-		if [[ -e "$bak" ]]; then
-			continue
+		if [[ ! -e "$backup_path" ]]; then
+			if [[ "$tool" == "clang++" && -L "$tool_path" ]]; then
+				# Keep clang++_ pointing at clang_ to avoid wrapper recursion.
+				rm -f "$tool_path"
+				ln -sfn "clang_" "$backup_path"
+			else
+				mv "$tool_path" "$backup_path"
+			fi
 		fi
 
-		mv "$f" "$bak"
-		ln -sfn "ndk-wrapper.py" "$f"
+		ln -sfn "ndk-wrapper.py" "$tool_path"
 	done
 }
 
