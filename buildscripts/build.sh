@@ -1,30 +1,39 @@
-#!/bin/bash -e
-source $BUILDSCRIPTS_DIR/include/depinfo.sh
+#!/usr/bin/env bash
+set -euo pipefail
 
-# Get dependencies for a target using indirect variable expansion
-getdeps() {
-	varname="dep_${1//-/_}[*]"
-	echo ${!varname}
+export BUILDSCRIPTS_DIR="${BUILDSCRIPTS_DIR:-$(realpath "$(dirname "${BASH_SOURCE[0]}")")}"
+source "$BUILDSCRIPTS_DIR/include/path.sh"
+source "$BUILDSCRIPTS_DIR/include/common.sh"
+source "$BUILDSCRIPTS_DIR/include/depinfo.sh"
+
+declare -A BUILT_TARGETS=()
+declare -A ACTIVE_TARGETS=()
+
+# Get dependencies for a target using indirect variable expansion.
+get_deps() {
+	local varname="dep_${1//-/_}[@]"
+	echo "${!varname:-}"
 }
 
-loadarch() {
+load_arch() {
 	unset CC CXX CPATH LIBRARY_PATH C_INCLUDE_PATH CPLUS_INCLUDE_PATH
 
 	local api_level=24
-	export ndk_suffix=-arm64
-	export ndk_triple=aarch64-linux-android
-	local cc_triple=$ndk_triple$api_level
-	export build_dir="_build$ndk_suffix"
-	local prefix_name=arm64-v8a
-	export prefix_dir="$PREFIX_DIR/$prefix_name"
-	export native_dir="$ROOT_DIR/libmpv/src/main/jniLibs/$prefix_name"
+	local prefix_name="arm64-v8a"
 
-	export CC=$cc_triple-clang
-	export CXX=$cc_triple-clang++
-	export AS=$CC
-	export AR=llvm-ar
-	export NM=llvm-nm
-	export RANLIB=llvm-ranlib
+	export ndk_suffix="-arm64"
+	export ndk_triple="aarch64-linux-android"
+	local cc_triple="${ndk_triple}${api_level}"
+	export build_dir="_build${ndk_suffix}"
+	export prefix_dir="${PREFIX_DIR}/${prefix_name}"
+	export native_dir="${ROOT_DIR}/libmpv/src/main/jniLibs/${prefix_name}"
+
+	export CC="${cc_triple}-clang"
+	export CXX="${cc_triple}-clang++"
+	export AS="$CC"
+	export AR="llvm-ar"
+	export NM="llvm-nm"
+	export RANLIB="llvm-ranlib"
 
 	export _CMAKE="cmake -B $build_dir -S . -G Ninja -DCMAKE_PREFIX_PATH=$prefix_dir -DCMAKE_BUILD_TYPE=Release"
 	export _MESON="meson setup $build_dir --cross-file $prefix_dir/crossfile.txt"
@@ -37,21 +46,16 @@ loadarch() {
 }
 
 setup_prefix() {
-	if [ ! -d "$prefix_dir" ]; then
-		mkdir -p "$prefix_dir"
-		# enforce flat structure (/usr/local -> /)
-		ln -s . "$prefix_dir/usr"
-		ln -s . "$prefix_dir/local"
-	fi
+	ensure_dir "$prefix_dir"
+	ensure_dir "$native_dir"
 
-	if [ ! -d "$native_dir" ]; then
-		mkdir -p "$native_dir"
-	fi
+	# Enforce flat prefix structure (/usr/local -> /).
+	[[ -e "$prefix_dir/usr" ]] || ln -s . "$prefix_dir/usr"
+	[[ -e "$prefix_dir/local" ]] || ln -s . "$prefix_dir/local"
 
-	local cpu_family=${ndk_triple%%-*}
+	local cpu_family="${ndk_triple%%-*}"
 
-	# meson wants to be spoonfed this file, so create it ahead of time
-	# also define: release build, static libs and no source downloads at runtime(!!!)
+	# Meson needs this cross file to avoid host auto-detection.
 	cat >"$prefix_dir/crossfile.txt" <<CROSSFILE
 [built-in options]
 buildtype = 'release'
@@ -74,26 +78,49 @@ endian = 'little'
 CROSSFILE
 }
 
-build() {
-	if [ ! -d $DEPS_DIR/$1 ]; then
-		printf >&2 '\e[1;31m%s\e[m\n' "Target $1 not found"
-		exit 1
+build_target() {
+	local target="$1"
+	local target_dir="$DEPS_DIR/$target"
+	local script_path="$BUILDSCRIPTS_DIR/scripts/$target.sh"
+	local dep
+
+	if [[ -n "${BUILT_TARGETS[$target]:-}" ]]; then
+		return
 	fi
-	printf >&2 '\e[1;34m%s\e[m\n' "Preparing $1..."
-	local deps=$(getdeps $1)
-	echo >&2 "Dependencies: $deps"
-	for dep in $deps; do
-		build $dep
+	if [[ -n "${ACTIVE_TARGETS[$target]:-}" ]]; then
+		die "Dependency cycle detected on target: $target"
+	fi
+	[[ -d "$target_dir" ]] || die "Target $target not found at $target_dir"
+	[[ -f "$script_path" ]] || die "Build script missing: $script_path"
+
+	ACTIVE_TARGETS[$target]=1
+
+	local deps=()
+	local deps_line
+	deps_line="$(get_deps "$target")"
+	if [[ -n "$deps_line" ]]; then
+		read -r -a deps <<<"$deps_line"
+	fi
+
+	log_info "Preparing $target..."
+	if [[ "${#deps[@]}" -eq 0 ]]; then
+		echo >&2 "Dependencies: <none>"
+	else
+		echo >&2 "Dependencies: ${deps[*]}"
+	fi
+	for dep in "${deps[@]}"; do
+		build_target "$dep"
 	done
 
-	printf >&2 '\e[1;34m%s\e[m\n' "Building $1..."
-	pushd $DEPS_DIR/$1
-	$BUILDSCRIPTS_DIR/scripts/$1.sh
-	popd
+	log_info "Building $target..."
+	pushd "$target_dir" >/dev/null
+	"$script_path"
+	popd >/dev/null
+
+	unset "ACTIVE_TARGETS[$target]"
+	BUILT_TARGETS[$target]=1
 }
 
-loadarch
+load_arch
 setup_prefix
-build mpv
-
-exit 0
+build_target "mpv"

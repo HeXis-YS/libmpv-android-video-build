@@ -1,50 +1,49 @@
-#!/bin/bash -e
-source $BUILDSCRIPTS_DIR/include/depinfo.sh
+#!/usr/bin/env bash
+set -euo pipefail
 
-set -eo pipefail
+export BUILDSCRIPTS_DIR="${BUILDSCRIPTS_DIR:-$(realpath "$(dirname "${BASH_SOURCE[0]}")")}"
+source "$BUILDSCRIPTS_DIR/include/path.sh"
+source "$BUILDSCRIPTS_DIR/include/common.sh"
+source "$BUILDSCRIPTS_DIR/include/depinfo.sh"
 
-# Dependencies
-pip install meson
+ensure_meson() {
+	if command -v meson >/dev/null 2>&1; then
+		return
+	fi
+	log_info "Installing meson..."
+	python3 -m pip install meson
+}
 
-GIT_CLONE="git clone --depth 1 --single-branch --no-tags"
+clone_repo() {
+	local dest="$1"
+	local branch="$2"
+	local url="$3"
+	shift 3
 
-mkdir -p $DEPS_DIR
-pushd $DEPS_DIR
+	git clone --depth 1 --single-branch --no-tags -b "$branch" "$@" "$url" "$dest"
+}
 
-# flutter
-git clone --depth 1 --single-branch -b stable https://github.com/flutter/flutter &
+ensure_meson
+ensure_dir "$DEPS_DIR"
+pushd "$DEPS_DIR" >/dev/null
 
-# mpv
-$GIT_CLONE -b release/$v_mpv https://github.com/HeXis-YS/mpv.git mpv &
+clone_repo "flutter" "stable" "https://github.com/flutter/flutter" &
+clone_repo "mpv" "release/$v_mpv" "https://github.com/HeXis-YS/mpv.git" &
+clone_repo "ffmpeg" "n$v_ffmpeg" "https://github.com/FFmpeg/FFmpeg.git" &
+clone_repo "mbedtls" "v$v_mbedtls" "https://github.com/Mbed-TLS/mbedtls.git" --recurse-submodules --shallow-submodules &
+clone_repo "libwebp" "v$v_libwebp" "https://github.com/webmproject/libwebp.git" &
+clone_repo "libplacebo" "v$v_libplacebo" "https://code.videolan.org/videolan/libplacebo.git" --recurse-submodules --shallow-submodules &
+clone_repo "media-kit-android-helper" "main" "https://github.com/media-kit/media-kit-android-helper.git" &
+clone_repo "media_kit" "version_1.2.5" "https://github.com/bggRGjQaUbCoE/media-kit.git" &
 
-# ffmpeg
-$GIT_CLONE -b n$v_ffmpeg https://github.com/FFmpeg/FFmpeg.git ffmpeg &
-
-if [ -n "$ENABLE_DAV1D" ]; then
-	# dav1d
-	$GIT_CLONE -b $v_dav1d https://code.videolan.org/videolan/dav1d.git dav1d &
+if is_enabled "ENABLE_DAV1D"; then
+	clone_repo "dav1d" "$v_dav1d" "https://code.videolan.org/videolan/dav1d.git" &
 fi
 
-# mbedtls
-$GIT_CLONE -b v$v_mbedtls --recurse-submodules --shallow-submodules https://github.com/Mbed-TLS/mbedtls.git mbedtls &
-
-# libwebp
-$GIT_CLONE -b v$v_libwebp https://github.com/webmproject/libwebp.git libwebp &
-
-# libplacebo
-$GIT_CLONE -b v$v_libplacebo --recurse-submodules --shallow-submodules https://code.videolan.org/videolan/libplacebo.git libplacebo &
-
-if [ -n "$ENABLE_VULKAN" ]; then
-	# shaderc
-	mkdir -p shaderc
+if is_enabled "ENABLE_VULKAN"; then
+	# shaderc is provided by the NDK source tree and does not need cloning.
+	ensure_dir "shaderc"
 fi
-
-# media-kit-android-helper
-$GIT_CLONE -b main https://github.com/media-kit/media-kit-android-helper.git media-kit-android-helper &
-
-# media_kit
-$GIT_CLONE -b version_1.2.5 https://github.com/bggRGjQaUbCoE/media-kit.git media_kit &
 
 wait
-
-popd
+popd >/dev/null
