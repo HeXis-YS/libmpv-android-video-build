@@ -15,7 +15,7 @@ pushd $DEPS_DIR
 git clone --depth 1 --single-branch -b stable https://github.com/flutter/flutter &
 
 # mpv
-$GIT_CLONE -b v$v_mpv https://github.com/mpv-player/mpv.git mpv &
+$GIT_CLONE -b release/$v_mpv https://github.com/HeXis-YS/mpv.git mpv &
 
 # ffmpeg
 $GIT_CLONE -b n$v_ffmpeg https://github.com/FFmpeg/FFmpeg.git ffmpeg &
@@ -30,18 +30,6 @@ $GIT_CLONE -b v$v_mbedtls --recurse-submodules --shallow-submodules https://gith
 
 # libwebp
 $GIT_CLONE -b v$v_libwebp https://github.com/webmproject/libwebp.git libwebp &
-
-# libass
-$GIT_CLONE -b $v_libass https://github.com/libass/libass.git libass &
-
-# freetype2
-$GIT_CLONE -b VER-$v_freetype https://gitlab.freedesktop.org/freetype/freetype.git freetype &
-
-# fribidi
-$GIT_CLONE -b v$v_fribidi https://github.com/fribidi/fribidi.git fribidi &
-
-# harfbuzz
-$GIT_CLONE -b $v_harfbuzz https://github.com/harfbuzz/harfbuzz.git harfbuzz &
 
 # libplacebo
 $GIT_CLONE -b v$v_libplacebo --recurse-submodules --shallow-submodules https://code.videolan.org/videolan/libplacebo.git libplacebo &
