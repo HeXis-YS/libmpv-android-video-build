@@ -23,11 +23,21 @@ clone_repo() {
 	git clone --depth 1 --single-branch --no-tags -b "$branch" "$@" "$url" "$dest"
 }
 
+clone_repo_with_tags() {
+	local dest="$1"
+	local branch="$2"
+	local url="$3"
+	shift 3
+
+	git clone --depth 1 --single-branch -b "$branch" "$@" "$url" "$dest"
+}
+
 ensure_meson
 ensure_dir "$DEPS_DIR"
 pushd "$DEPS_DIR" >/dev/null
 
-clone_repo "flutter" "stable" "https://github.com/flutter/flutter" &
+# Flutter relies on git tags to resolve toolchain version metadata.
+clone_repo_with_tags "flutter" "stable" "https://github.com/flutter/flutter" &
 clone_repo "mpv" "release/$v_mpv" "https://github.com/HeXis-YS/mpv.git" &
 clone_repo "ffmpeg" "n$v_ffmpeg" "https://github.com/FFmpeg/FFmpeg.git" &
 clone_repo "mbedtls" "v$v_mbedtls" "https://github.com/Mbed-TLS/mbedtls.git" --recurse-submodules --shallow-submodules &
