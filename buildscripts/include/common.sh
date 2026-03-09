@@ -21,3 +21,19 @@ is_enabled() {
 ensure_dir() {
 	mkdir -p "$1"
 }
+
+require_file() {
+	[[ -f "$1" ]] || die "File not found: $1"
+}
+
+require_dir() {
+	[[ -d "$1" ]] || die "Directory not found: $1"
+}
+
+run_in_dir() {
+	local dir="$1"
+	shift
+	pushd "$dir" >/dev/null
+	"$@"
+	popd >/dev/null
+}

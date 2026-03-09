@@ -23,26 +23,34 @@ clone_repo() {
 	git clone --depth 1 --single-branch --no-tags -b "$branch" "$@" "$url" "$dest"
 }
 
+queue_clone() {
+	clone_repo "$@" &
+}
+
+queue_default_repos() {
+	queue_clone "mpv" "release/$v_mpv" "https://github.com/HeXis-YS/mpv.git"
+	queue_clone "ffmpeg" "n$v_ffmpeg" "https://github.com/FFmpeg/FFmpeg.git"
+	queue_clone "mbedtls" "v$v_mbedtls" "https://github.com/Mbed-TLS/mbedtls.git" --recurse-submodules --shallow-submodules
+	queue_clone "libwebp" "v$v_libwebp" "https://github.com/webmproject/libwebp.git"
+	queue_clone "libplacebo" "v$v_libplacebo" "https://code.videolan.org/videolan/libplacebo.git" --recurse-submodules --shallow-submodules
+	queue_clone "media-kit-android-helper" "main" "https://github.com/media-kit/media-kit-android-helper.git"
+	queue_clone "media_kit" "version_1.2.5" "https://github.com/bggRGjQaUbCoE/media-kit.git"
+}
+
+queue_optional_repos() {
+	if is_enabled "ENABLE_DAV1D"; then
+		queue_clone "dav1d" "$v_dav1d" "https://code.videolan.org/videolan/dav1d.git"
+	fi
+
+	if is_enabled "ENABLE_VULKAN"; then
+		# shaderc is provided by the NDK source tree and does not need cloning.
+		ensure_dir "$DEPS_DIR/shaderc"
+	fi
+}
+
 ensure_meson
 ensure_dir "$DEPS_DIR"
-pushd "$DEPS_DIR" >/dev/null
 
-clone_repo "mpv" "release/$v_mpv" "https://github.com/HeXis-YS/mpv.git" &
-clone_repo "ffmpeg" "n$v_ffmpeg" "https://github.com/FFmpeg/FFmpeg.git" &
-clone_repo "mbedtls" "v$v_mbedtls" "https://github.com/Mbed-TLS/mbedtls.git" --recurse-submodules --shallow-submodules &
-clone_repo "libwebp" "v$v_libwebp" "https://github.com/webmproject/libwebp.git" &
-clone_repo "libplacebo" "v$v_libplacebo" "https://code.videolan.org/videolan/libplacebo.git" --recurse-submodules --shallow-submodules &
-clone_repo "media-kit-android-helper" "main" "https://github.com/media-kit/media-kit-android-helper.git" &
-clone_repo "media_kit" "version_1.2.5" "https://github.com/bggRGjQaUbCoE/media-kit.git" &
-
-if is_enabled "ENABLE_DAV1D"; then
-	clone_repo "dav1d" "$v_dav1d" "https://code.videolan.org/videolan/dav1d.git" &
-fi
-
-if is_enabled "ENABLE_VULKAN"; then
-	# shaderc is provided by the NDK source tree and does not need cloning.
-	ensure_dir "shaderc"
-fi
-
+run_in_dir "$DEPS_DIR" queue_default_repos
+run_in_dir "$DEPS_DIR" queue_optional_repos
 wait
-popd >/dev/null

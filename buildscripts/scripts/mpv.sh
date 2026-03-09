@@ -1,10 +1,16 @@
-#!/bin/bash -e
+#!/usr/bin/env bash
+set -euo pipefail
+
 unset CC CXX # meson wants these unset
 
-target_lib_dir="$BUILD_DIR/output/lib/$prefix_name"
+: "${BUILD_DIR:?BUILD_DIR is not set}"
+: "${TARGET_ABI:?TARGET_ABI is not set}"
+: "${prefix_dir:?prefix_dir is not set}"
+
+target_lib_dir="${TARGET_LIB_DIR:-$BUILD_DIR/output/lib/$TARGET_ABI}"
 
 VULKAN_CONFIG="-Dvulkan=disabled"
-if [ -n "$ENABLE_VULKAN" ]; then
+if [[ -n "${ENABLE_VULKAN:-}" ]]; then
 	VULKAN_CONFIG="-Dvulkan=enabled"
 fi
 

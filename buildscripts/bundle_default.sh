@@ -5,63 +5,60 @@ export BUILDSCRIPTS_DIR="${BUILDSCRIPTS_DIR:-$(realpath "$(dirname "${BASH_SOURC
 source "$BUILDSCRIPTS_DIR/include/path.sh"
 source "$BUILDSCRIPTS_DIR/include/common.sh"
 
-readonly TARGET_ABI="arm64-v8a"
+readonly TARGET_ABI="${TARGET_ABI:-arm64-v8a}"
+readonly TARGET_LIB_DIR="$BUILD_DIR/output/lib/$TARGET_ABI"
+readonly PREFIX_LIB_DIR="$PREFIX_DIR/$TARGET_ABI/lib"
 readonly OUTPUT_JAR="$BUILD_DIR/output/default-$TARGET_ABI.jar"
 
 prepare_workspace() {
 	ensure_dir "$BUILD_DIR"
-	pushd "$BUILD_DIR" >/dev/null
-	rm -rf deps prefix
-	ensure_dir deps
-	ensure_dir prefix
-	popd >/dev/null
+	rm -rf "$DEPS_DIR" "$PREFIX_DIR" "$BUILD_DIR/output"
+	ensure_dir "$DEPS_DIR"
+	ensure_dir "$PREFIX_DIR"
+}
+
+run_pipeline_step() {
+	local step="$1"
+	run_in_dir "$BUILD_DIR" "$BUILDSCRIPTS_DIR/$step"
 }
 
 build_native_components() {
-	pushd "$BUILD_DIR" >/dev/null
-	"$BUILDSCRIPTS_DIR/download.sh"
-	"$BUILDSCRIPTS_DIR/patch.sh"
-	"$BUILDSCRIPTS_DIR/setup_wrapper.sh"
-	"$BUILDSCRIPTS_DIR/build.sh"
-	popd >/dev/null
+	local step
+	for step in download.sh patch.sh setup_wrapper.sh build.sh; do
+		run_pipeline_step "$step"
+	done
 }
 
-compile_media_kit_shared_objects() {
-	local prefix_lib_dir="$PREFIX_DIR/$TARGET_ABI/lib"
-	local target_lib_dir="$BUILD_DIR/output/lib/$TARGET_ABI"
+stage_shared_objects() {
 	local so_path
 	local so_file_count
 
-	[[ -d "$prefix_lib_dir" ]] || die "Missing prefix lib directory: $prefix_lib_dir"
-	[[ -f "$target_lib_dir/libmediakitandroidhelper.so" ]] || die "Missing built library: $target_lib_dir/libmediakitandroidhelper.so"
-	[[ -f "$target_lib_dir/libmedia_kit_native_event_loop.so" ]] || die "Missing built library: $target_lib_dir/libmedia_kit_native_event_loop.so"
+	require_dir "$PREFIX_LIB_DIR"
+	require_file "$TARGET_LIB_DIR/libmediakitandroidhelper.so"
+	require_file "$TARGET_LIB_DIR/libmedia_kit_native_event_loop.so"
 
 	# Include mpv and dependency shared objects in the final jar.
 	while IFS= read -r -d '' so_path; do
-		cp -aL "$so_path" "$target_lib_dir/"
-	done < <(find "$prefix_lib_dir" -maxdepth 1 -type f -name "lib*.so*" -print0)
+		cp -aL "$so_path" "$TARGET_LIB_DIR/"
+	done < <(find "$PREFIX_LIB_DIR" -maxdepth 1 -type f -name "lib*.so*" -print0)
 
-	so_file_count="$(find "$target_lib_dir" -maxdepth 1 -type f -name "*.so*" | wc -l)"
+	so_file_count="$(find "$TARGET_LIB_DIR" -maxdepth 1 -type f -name "*.so*" | wc -l)"
 	if [[ "$so_file_count" -eq 0 ]]; then
-		die "No shared objects found in $target_lib_dir; refusing to create empty jar."
+		die "No shared objects found in $TARGET_LIB_DIR; refusing to create empty jar."
 	fi
 }
 
 package_output_jar() {
-	local staged_lib_dir="$BUILD_DIR/output/lib/$TARGET_ABI"
-	[[ -d "$staged_lib_dir" ]] || die "Missing staged library directory: $staged_lib_dir"
-
+	require_dir "$TARGET_LIB_DIR"
 	ensure_dir "$BUILD_DIR/output"
 	rm -f "$OUTPUT_JAR"
-	pushd "$BUILD_DIR/output" >/dev/null
-	zip -q -r "$(basename "$OUTPUT_JAR")" "lib/$TARGET_ABI"
-	popd >/dev/null
+	run_in_dir "$BUILD_DIR/output" zip -q -r "$(basename "$OUTPUT_JAR")" "lib/$TARGET_ABI"
 }
 
 main() {
 	prepare_workspace
 	build_native_components
-	compile_media_kit_shared_objects
+	stage_shared_objects
 	package_output_jar
 }
 

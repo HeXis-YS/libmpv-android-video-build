@@ -9,23 +9,36 @@ source "$BUILDSCRIPTS_DIR/include/depinfo.sh"
 declare -A BUILT_TARGETS=()
 declare -A ACTIVE_TARGETS=()
 
-# Get dependencies for a target using indirect variable expansion.
 get_deps() {
 	local varname="dep_${1//-/_}[@]"
-	echo "${!varname:-}"
+	printf '%s\n' "${!varname:-}"
+}
+
+run_target_script() {
+	local script_path="$1"
+	local target_dir="$2"
+
+	if [[ -d "$target_dir" ]]; then
+		run_in_dir "$target_dir" "$script_path"
+	else
+		log_info "Using virtual target: $(basename "${script_path%.sh}")"
+		"$script_path"
+	fi
 }
 
 load_arch() {
 	unset CC CXX CPATH LIBRARY_PATH C_INCLUDE_PATH CPLUS_INCLUDE_PATH
 
-	local api_level=24
-	local prefix_name="arm64-v8a"
+	local api_level="${ANDROID_API_LEVEL:-24}"
+	local target_abi="arm64-v8a"
 
 	export ndk_suffix="-arm64"
 	export ndk_triple="aarch64-linux-android"
 	local cc_triple="${ndk_triple}${api_level}"
 	export build_dir="_build${ndk_suffix}"
-	export prefix_dir="${PREFIX_DIR}/${prefix_name}"
+	export prefix_dir="${PREFIX_DIR}/${target_abi}"
+	export TARGET_ABI="$target_abi"
+	export TARGET_LIB_DIR="$BUILD_DIR/output/lib/$TARGET_ABI"
 
 	export CC="${cc_triple}-clang"
 	export CXX="${cc_triple}-clang++"
@@ -46,6 +59,7 @@ load_arch() {
 
 setup_prefix() {
 	ensure_dir "$prefix_dir"
+	ensure_dir "$TARGET_LIB_DIR"
 
 	# Enforce flat prefix structure (/usr/local -> /).
 	[[ -e "$prefix_dir/usr" ]] || ln -s . "$prefix_dir/usr"
@@ -89,9 +103,6 @@ build_target() {
 		die "Dependency cycle detected on target: $target"
 	fi
 	[[ -f "$script_path" ]] || die "Build script missing: $script_path"
-	if [[ ! -d "$target_dir" ]]; then
-		log_info "Using virtual target: $target"
-	fi
 
 	ACTIVE_TARGETS[$target]=1
 
@@ -113,13 +124,7 @@ build_target() {
 	done
 
 	log_info "Building $target..."
-	if [[ -d "$target_dir" ]]; then
-		pushd "$target_dir" >/dev/null
-		"$script_path"
-		popd >/dev/null
-	else
-		"$script_path"
-	fi
+	run_target_script "$script_path" "$target_dir"
 
 	unset "ACTIVE_TARGETS[$target]"
 	BUILT_TARGETS[$target]=1
