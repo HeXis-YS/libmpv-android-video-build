@@ -9,4 +9,4 @@ export CUSTOM_FFMPEG_OPTIONS="--disable-runtime-cpudetect --disable-sve --disabl
 # export ENABLE_VULKAN=1
 # export ENABLE_DAV1D=1
 
-buildscripts/bundle_default.sh
+buildscripts/build.sh

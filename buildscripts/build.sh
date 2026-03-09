@@ -9,6 +9,25 @@ source "$BUILDSCRIPTS_DIR/include/depinfo.sh"
 declare -A BUILT_TARGETS=()
 declare -A ACTIVE_TARGETS=()
 
+prepare_workspace() {
+	ensure_dir "$BUILD_DIR"
+	rm -rf "$DEPS_DIR" "$PREFIX_DIR" "$BUILD_DIR/output"
+	ensure_dir "$DEPS_DIR"
+	ensure_dir "$PREFIX_DIR"
+}
+
+run_pipeline_step() {
+	local step="$1"
+	run_in_dir "$BUILD_DIR" "$BUILDSCRIPTS_DIR/$step"
+}
+
+prepare_dependencies() {
+	local step
+	for step in download.sh patch.sh setup_wrapper.sh; do
+		run_pipeline_step "$step"
+	done
+}
+
 get_deps() {
 	local varname="dep_${1//-/_}[@]"
 	printf '%s\n' "${!varname:-}"
@@ -130,6 +149,46 @@ build_target() {
 	BUILT_TARGETS[$target]=1
 }
 
-load_arch
-setup_prefix
-build_target "${BUILD_TARGET:-libmedia_kit_native_event_loop}"
+build_native_components() {
+	load_arch
+	setup_prefix
+	build_target "${BUILD_TARGET:-libmedia_kit_native_event_loop}"
+}
+
+stage_shared_objects() {
+	local prefix_lib_dir="$PREFIX_DIR/$TARGET_ABI/lib"
+	local so_path
+	local so_file_count
+
+	require_dir "$prefix_lib_dir"
+	require_file "$TARGET_LIB_DIR/libmediakitandroidhelper.so"
+	require_file "$TARGET_LIB_DIR/libmedia_kit_native_event_loop.so"
+
+	# Include mpv and dependency shared objects in the final jar.
+	while IFS= read -r -d '' so_path; do
+		cp -aL "$so_path" "$TARGET_LIB_DIR/"
+	done < <(find "$prefix_lib_dir" -maxdepth 1 -type f -name "lib*.so*" -print0)
+
+	so_file_count="$(find "$TARGET_LIB_DIR" -maxdepth 1 -type f -name "*.so*" | wc -l)"
+	if [[ "$so_file_count" -eq 0 ]]; then
+		die "No shared objects found in $TARGET_LIB_DIR; refusing to create empty jar."
+	fi
+}
+
+package_output_jar() {
+	local output_jar="$BUILD_DIR/output/default-$TARGET_ABI.jar"
+	require_dir "$TARGET_LIB_DIR"
+	ensure_dir "$BUILD_DIR/output"
+	rm -f "$output_jar"
+	run_in_dir "$BUILD_DIR/output" zip -q -r "$(basename "$output_jar")" "lib/$TARGET_ABI"
+}
+
+main() {
+	prepare_workspace
+	prepare_dependencies
+	build_native_components
+	stage_shared_objects
+	package_output_jar
+}
+
+main "$@"
