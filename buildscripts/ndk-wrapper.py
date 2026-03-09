@@ -58,16 +58,20 @@ class CompilerWrapper:
         return False
 
     def should_skip_customization(self):
-        return len(self.args) == 0 or "-cc1" in self.args or "-cc1as" in self.args or not self.check_target()
+        return (
+            os.getenv("NDK_WRAPPER_DISABLED") or
+            len(self.args) <= 2 or
+            "-cc1" in self.args or
+            "-cc1as" in self.args or
+            not self.check_target()
+        )
 
     def build_prepend_flags(self):
         return [*split_env_flags("NDK_WRAPPER_PREPEND")]
 
     def build_append_flags(self):
         append_flags = []
-        if not os.getenv("NDK_WRAPPER_DISABLED"):
-            self.args = [arg for arg in self.args if not arg.startswith("-march=")]
-            append_flags.extend(DEFAULT_APPEND_FLAGS)
+        append_flags.extend(DEFAULT_APPEND_FLAGS)
         append_flags.extend(split_env_flags("NDK_WRAPPER_APPEND"))
         return append_flags
 
