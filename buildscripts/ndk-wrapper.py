@@ -47,10 +47,10 @@ class CompilerWrapper:
         i = len(self.args) - 1
         while i >= 0:
             arg = self.args[i]
-            if arg.startswith("-target="):
+            if arg.startswith("-target=") or arg.startswith("--target="):
                 value = arg.split("=", 1)[1]
                 return value.startswith("aarch64")
-            elif arg == "-target":
+            elif arg == "-target" or arg == "--target":
                 if i + 1 < len(self.args):
                     return self.args[i + 1].startswith("aarch64")
                 return False
