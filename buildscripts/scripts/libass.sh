@@ -10,9 +10,9 @@ NDK_WRAPPER_DISABLED=1 ../configure \
 	--with-pic \
 	--disable-shared \
 	--disable-require-system-font-provider \
-	--disable-asm
+	--enable-asm
 
-NDK_WRAPPER_APPEND="$NDK_WRAPPER_APPEND -Oz" $_MAKE
+$_MAKE
 DESTDIR="$TARGET_PREFIX_DIR" $_MAKE install
 
 popd

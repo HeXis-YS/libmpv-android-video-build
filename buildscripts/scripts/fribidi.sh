@@ -8,5 +8,5 @@ $_MESON \
 	-Dbin=false \
 	-Ddocs=false
 
-NDK_WRAPPER_APPEND="$NDK_WRAPPER_APPEND -Oz" $_NINJA
+$_NINJA
 DESTDIR="$TARGET_PREFIX_DIR" $_NINJA install
