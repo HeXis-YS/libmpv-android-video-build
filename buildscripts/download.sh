@@ -28,10 +28,14 @@ queue_clone() {
 }
 
 queue_default_repos() {
-	queue_clone "mpv" "release/$v_mpv" "https://github.com/HeXis-YS/mpv.git"
+	queue_clone "mpv" "v$v_mpv" "https://github.com/mpv-player/mpv.git"
 	queue_clone "ffmpeg" "n$v_ffmpeg" "https://github.com/FFmpeg/FFmpeg.git"
 	queue_clone "mbedtls" "v$v_mbedtls" "https://github.com/Mbed-TLS/mbedtls.git" --recurse-submodules --shallow-submodules
 	queue_clone "libwebp" "v$v_libwebp" "https://github.com/webmproject/libwebp.git"
+	queue_clone "libass" "$v_libass" "https://github.com/libass/libass.git"
+	queue_clone "freetype" "VER-$v_freetype" "https://gitlab.freedesktop.org/freetype/freetype.git"
+	queue_clone "fribidi" "v$v_fribidi" "https://github.com/fribidi/fribidi.git"
+	queue_clone "harfbuzz" "$v_harfbuzz" "https://github.com/harfbuzz/harfbuzz.git"
 	queue_clone "libplacebo" "v$v_libplacebo" "https://code.videolan.org/videolan/libplacebo.git" --recurse-submodules --shallow-submodules
 	queue_clone "media-kit-android-helper" "main" "https://github.com/media-kit/media-kit-android-helper.git"
 	queue_clone "media_kit" "version_1.2.5" "https://github.com/bggRGjQaUbCoE/media-kit.git"
