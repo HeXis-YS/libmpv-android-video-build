@@ -11,6 +11,8 @@ v_libplacebo=7.351.0
 dep_mpv=(ffmpeg libplacebo)
 dep_ffmpeg=(mbedtls libwebp)
 dep_mbedtls=()
+dep_libmediakitandroidhelper=()
+dep_libmedia_kit_native_event_loop=(libmediakitandroidhelper mpv)
 dep_libwebp=()
 dep_libplacebo=()
 

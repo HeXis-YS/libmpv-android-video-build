@@ -1,6 +1,8 @@
 #!/bin/bash -e
 unset CC CXX # meson wants these unset
 
+target_lib_dir="$BUILD_DIR/output/lib/$prefix_name"
+
 VULKAN_CONFIG="-Dvulkan=disabled"
 if [ -n "$ENABLE_VULKAN" ]; then
 	VULKAN_CONFIG="-Dvulkan=enabled"
@@ -21,4 +23,5 @@ $_MESON \
 $_NINJA
 DESTDIR="$prefix_dir" $_NINJA install
 
-ln -sf "$prefix_dir/lib/libmpv.so" "$native_dir"
+mkdir -p "$target_lib_dir"
+ln -sf "$prefix_dir/lib/libmpv.so" "$target_lib_dir/libmpv.so"

@@ -26,7 +26,6 @@ load_arch() {
 	local cc_triple="${ndk_triple}${api_level}"
 	export build_dir="_build${ndk_suffix}"
 	export prefix_dir="${PREFIX_DIR}/${prefix_name}"
-	export native_dir="${ROOT_DIR}/libmpv/src/main/jniLibs/${prefix_name}"
 
 	export CC="${cc_triple}-clang"
 	export CXX="${cc_triple}-clang++"
@@ -47,7 +46,6 @@ load_arch() {
 
 setup_prefix() {
 	ensure_dir "$prefix_dir"
-	ensure_dir "$native_dir"
 
 	# Enforce flat prefix structure (/usr/local -> /).
 	[[ -e "$prefix_dir/usr" ]] || ln -s . "$prefix_dir/usr"
@@ -90,8 +88,10 @@ build_target() {
 	if [[ -n "${ACTIVE_TARGETS[$target]:-}" ]]; then
 		die "Dependency cycle detected on target: $target"
 	fi
-	[[ -d "$target_dir" ]] || die "Target $target not found at $target_dir"
 	[[ -f "$script_path" ]] || die "Build script missing: $script_path"
+	if [[ ! -d "$target_dir" ]]; then
+		log_info "Using virtual target: $target"
+	fi
 
 	ACTIVE_TARGETS[$target]=1
 
@@ -113,9 +113,13 @@ build_target() {
 	done
 
 	log_info "Building $target..."
-	pushd "$target_dir" >/dev/null
-	"$script_path"
-	popd >/dev/null
+	if [[ -d "$target_dir" ]]; then
+		pushd "$target_dir" >/dev/null
+		"$script_path"
+		popd >/dev/null
+	else
+		"$script_path"
+	fi
 
 	unset "ACTIVE_TARGETS[$target]"
 	BUILT_TARGETS[$target]=1
@@ -123,4 +127,4 @@ build_target() {
 
 load_arch
 setup_prefix
-build_target "mpv"
+build_target "${BUILD_TARGET:-libmedia_kit_native_event_loop}"
