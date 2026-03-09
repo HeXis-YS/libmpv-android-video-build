@@ -30,7 +30,7 @@ load_arch() {
 	export ndk_triple="aarch64-linux-android"
 	local cc_triple="${ndk_triple}${api_level}"
 	export build_dir="_build${ndk_suffix}"
-	export prefix_dir="${PREFIX_DIR}/${target_abi}"
+	export TARGET_PREFIX_DIR="${PREFIX_DIR}/${target_abi}"
 	export TARGET_ABI="$target_abi"
 	export TARGET_LIB_DIR="$BUILD_DIR/output/lib/$TARGET_ABI"
 
@@ -41,28 +41,28 @@ load_arch() {
 	export NM="llvm-nm"
 	export RANLIB="llvm-ranlib"
 
-	export _CMAKE="cmake -B $build_dir -S . -G Ninja -DCMAKE_PREFIX_PATH=$prefix_dir -DCMAKE_BUILD_TYPE=Release"
-	export _MESON="meson setup $build_dir --cross-file $prefix_dir/crossfile.txt"
+	export _CMAKE="cmake -B $build_dir -S . -G Ninja -DCMAKE_PREFIX_PATH=$TARGET_PREFIX_DIR -DCMAKE_BUILD_TYPE=Release"
+	export _MESON="meson setup $build_dir --cross-file $TARGET_PREFIX_DIR/crossfile.txt"
 	export _MAKE="make -j$(nproc)"
 	export _NINJA="ninja -j$(nproc) -C $build_dir"
 
-	export PKG_CONFIG_SYSROOT_DIR="$prefix_dir"
+	export PKG_CONFIG_SYSROOT_DIR="$TARGET_PREFIX_DIR"
 	export PKG_CONFIG_LIBDIR="$PKG_CONFIG_SYSROOT_DIR/lib/pkgconfig"
 	unset PKG_CONFIG_PATH
 }
 
 setup_prefix() {
-	ensure_dir "$prefix_dir"
+	ensure_dir "$TARGET_PREFIX_DIR"
 	ensure_dir "$TARGET_LIB_DIR"
 
 	# Enforce flat prefix structure (/usr/local -> /).
-	[[ -e "$prefix_dir/usr" ]] || ln -s . "$prefix_dir/usr"
-	[[ -e "$prefix_dir/local" ]] || ln -s . "$prefix_dir/local"
+	[[ -e "$TARGET_PREFIX_DIR/usr" ]] || ln -s . "$TARGET_PREFIX_DIR/usr"
+	[[ -e "$TARGET_PREFIX_DIR/local" ]] || ln -s . "$TARGET_PREFIX_DIR/local"
 
 	local cpu_family="${ndk_triple%%-*}"
 
 	# Meson needs this cross file to avoid host auto-detection.
-	cat >"$prefix_dir/crossfile.txt" <<CROSSFILE
+	cat >"$TARGET_PREFIX_DIR/crossfile.txt" <<CROSSFILE
 [built-in options]
 buildtype = 'release'
 default_library = 'static'

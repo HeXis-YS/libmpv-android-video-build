@@ -3,6 +3,7 @@ DAV1D_CONFIG=
 if [ -n "$ENABLE_DAV1D" ]; then
 	DAV1D_CONFIG="--enable-libdav1d --enable-decoder=libdav1d"
 fi
+: "${TARGET_PREFIX_DIR:?TARGET_PREFIX_DIR is not set}"
 
 mkdir -p $build_dir
 pushd $build_dir
@@ -20,8 +21,8 @@ cpu=armv8-a
 	--arch=${ndk_triple%%-*} \
 	--cpu=$cpu \
 	--pkg-config=pkg-config \
-	--extra-cflags="-I$prefix_dir/include" \
-	--extra-ldflags="-L$prefix_dir/lib" \
+	--extra-cflags="-I$TARGET_PREFIX_DIR/include" \
+	--extra-ldflags="-L$TARGET_PREFIX_DIR/lib" \
 	\
 	--enable-version3 \
 	--disable-debug \
@@ -73,6 +74,6 @@ cpu=armv8-a
 	$CUSTOM_FFMPEG_OPTIONS
 
 $_MAKE
-DESTDIR="$prefix_dir" $_MAKE install
+DESTDIR="$TARGET_PREFIX_DIR" $_MAKE install
 
 popd

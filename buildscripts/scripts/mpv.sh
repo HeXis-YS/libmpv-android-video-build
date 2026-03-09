@@ -5,7 +5,7 @@ unset CC CXX # meson wants these unset
 
 : "${BUILD_DIR:?BUILD_DIR is not set}"
 : "${TARGET_ABI:?TARGET_ABI is not set}"
-: "${prefix_dir:?prefix_dir is not set}"
+: "${TARGET_PREFIX_DIR:?TARGET_PREFIX_DIR is not set}"
 
 target_lib_dir="${TARGET_LIB_DIR:-$BUILD_DIR/output/lib/$TARGET_ABI}"
 
@@ -27,7 +27,7 @@ $_MESON \
 	$VULKAN_CONFIG
 
 $_NINJA
-DESTDIR="$prefix_dir" $_NINJA install
+DESTDIR="$TARGET_PREFIX_DIR" $_NINJA install
 
 mkdir -p "$target_lib_dir"
-ln -sf "$prefix_dir/lib/libmpv.so" "$target_lib_dir/libmpv.so"
+ln -sf "$TARGET_PREFIX_DIR/lib/libmpv.so" "$target_lib_dir/libmpv.so"

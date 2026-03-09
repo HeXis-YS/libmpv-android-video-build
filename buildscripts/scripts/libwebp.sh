@@ -1,4 +1,5 @@
 #!/bin/bash -e
+: "${TARGET_PREFIX_DIR:?TARGET_PREFIX_DIR is not set}"
 
 $_CMAKE \
 	-DBUILD_SHARED_LIBS=OFF \
@@ -12,4 +13,4 @@ $_CMAKE \
 	-DWEBP_BUILD_EXTRAS=OFF
 
 $_NINJA
-DESTDIR="$prefix_dir" $_NINJA install
+DESTDIR="$TARGET_PREFIX_DIR" $_NINJA install

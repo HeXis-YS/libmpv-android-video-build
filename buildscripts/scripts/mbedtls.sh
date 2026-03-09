@@ -1,4 +1,5 @@
 #!/bin/bash -e
+: "${TARGET_PREFIX_DIR:?TARGET_PREFIX_DIR is not set}"
 
 cat >include/mbedtls/mbedtls_config.h <<"END"
 #define MBEDTLS_HAVE_ASM
@@ -53,4 +54,4 @@ $_CMAKE \
 	-DENABLE_TESTING=OFF
 
 $_NINJA
-DESTDIR="$prefix_dir" $_NINJA install
+DESTDIR="$TARGET_PREFIX_DIR" $_NINJA install

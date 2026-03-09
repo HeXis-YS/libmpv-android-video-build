@@ -5,13 +5,13 @@ set -euo pipefail
 : "${BUILD_DIR:?BUILD_DIR is not set}"
 : "${TARGET_ABI:?TARGET_ABI is not set}"
 : "${CXX:?CXX is not set}"
-: "${prefix_dir:?prefix_dir is not set}"
+: "${TARGET_PREFIX_DIR:?TARGET_PREFIX_DIR is not set}"
 
 event_loop_src="$DEPS_DIR/media_kit/media_kit_native_event_loop/src/media_kit_native_event_loop.cc"
 target_lib_dir="${TARGET_LIB_DIR:-$BUILD_DIR/output/lib/$TARGET_ABI}"
 compat_include_root="$BUILD_DIR/output/include-compat/$TARGET_ABI"
-mpv_include_root="$prefix_dir/include"
-mpv_client_dir="$prefix_dir/include/mpv"
+mpv_include_root="$TARGET_PREFIX_DIR/include"
+mpv_client_dir="$TARGET_PREFIX_DIR/include/mpv"
 include_args=()
 
 [[ -f "$event_loop_src" ]] || {
