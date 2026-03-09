@@ -48,9 +48,13 @@ queue_optional_repos() {
 	fi
 }
 
+download_all_repos() {
+	queue_default_repos
+	queue_optional_repos
+	wait
+}
+
 ensure_meson
 ensure_dir "$DEPS_DIR"
 
-run_in_dir "$DEPS_DIR" queue_default_repos
-run_in_dir "$DEPS_DIR" queue_optional_repos
-wait
+run_in_dir "$DEPS_DIR" download_all_repos

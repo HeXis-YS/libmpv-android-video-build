@@ -15,8 +15,9 @@ stage_shared_objects() {
 	local so_file_count
 
 	require_dir "$PREFIX_LIB_DIR"
-	require_file "$TARGET_LIB_DIR/libmediakitandroidhelper.so"
-	require_file "$TARGET_LIB_DIR/libmedia_kit_native_event_loop.so"
+	require_file \
+		"$TARGET_LIB_DIR/libmediakitandroidhelper.so" \
+		"$TARGET_LIB_DIR/libmedia_kit_native_event_loop.so"
 
 	# Include mpv and dependency shared objects in the final jar.
 	while IFS= read -r -d '' so_path; do

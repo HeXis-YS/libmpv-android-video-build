@@ -2,6 +2,7 @@
 set -euo pipefail
 
 export BUILDSCRIPTS_DIR="${BUILDSCRIPTS_DIR:-$(realpath "$(dirname "${BASH_SOURCE[0]}")")}"
+source "$BUILDSCRIPTS_DIR/include/path.sh"
 source "$BUILDSCRIPTS_DIR/include/common.sh"
 
 apply_dep_patches() {

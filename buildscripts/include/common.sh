@@ -19,21 +19,28 @@ is_enabled() {
 }
 
 ensure_dir() {
-	mkdir -p "$1"
+	mkdir -p "$@"
 }
 
 require_file() {
-	[[ -f "$1" ]] || die "File not found: $1"
+	local path
+	for path in "$@"; do
+		[[ -f "$path" ]] || die "File not found: $path"
+	done
 }
 
 require_dir() {
-	[[ -d "$1" ]] || die "Directory not found: $1"
+	local path
+	for path in "$@"; do
+		[[ -d "$path" ]] || die "Directory not found: $path"
+	done
 }
 
 run_in_dir() {
 	local dir="$1"
 	shift
-	pushd "$dir" >/dev/null
-	"$@"
-	popd >/dev/null
+	(
+		cd "$dir"
+		"$@"
+	)
 }

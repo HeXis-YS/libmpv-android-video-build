@@ -10,39 +10,14 @@ declare -A BUILT_TARGETS=()
 declare -A ACTIVE_TARGETS=()
 
 prepare_workspace() {
-	ensure_dir "$BUILD_DIR"
 	rm -rf "$DEPS_DIR" "$PREFIX_DIR" "$BUILD_DIR/output"
-	ensure_dir "$DEPS_DIR"
-	ensure_dir "$PREFIX_DIR"
-}
-
-run_pipeline_step() {
-	local step="$1"
-	run_in_dir "$BUILD_DIR" "$BUILDSCRIPTS_DIR/$step"
+	ensure_dir "$DEPS_DIR" "$PREFIX_DIR"
 }
 
 prepare_dependencies() {
-	local step
-	for step in download.sh patch.sh setup_wrapper.sh; do
-		run_pipeline_step "$step"
-	done
-}
-
-get_deps() {
-	local varname="dep_${1//-/_}[@]"
-	printf '%s\n' "${!varname:-}"
-}
-
-run_target_script() {
-	local script_path="$1"
-	local target_dir="$2"
-
-	if [[ -d "$target_dir" ]]; then
-		run_in_dir "$target_dir" "$script_path"
-	else
-		log_info "Using virtual target: $(basename "${script_path%.sh}")"
-		"$script_path"
-	fi
+	"$BUILDSCRIPTS_DIR/download.sh"
+	"$BUILDSCRIPTS_DIR/patch.sh"
+	"$BUILDSCRIPTS_DIR/setup_wrapper.sh"
 }
 
 load_arch() {
@@ -113,7 +88,6 @@ build_target() {
 	local target="$1"
 	local target_dir="$DEPS_DIR/$target"
 	local script_path="$BUILDSCRIPTS_DIR/scripts/$target.sh"
-	local dep
 
 	if [[ -n "${BUILT_TARGETS[$target]:-}" ]]; then
 		return
@@ -125,9 +99,9 @@ build_target() {
 
 	ACTIVE_TARGETS[$target]=1
 
+	local deps_var="dep_${target//-/_}[@]"
 	local deps=()
-	local deps_line
-	deps_line="$(get_deps "$target")"
+	local deps_line="${!deps_var-}"
 	if [[ -n "$deps_line" ]]; then
 		read -r -a deps <<<"$deps_line"
 	fi
@@ -143,7 +117,12 @@ build_target() {
 	done
 
 	log_info "Building $target..."
-	run_target_script "$script_path" "$target_dir"
+	if [[ -d "$target_dir" ]]; then
+		run_in_dir "$target_dir" "$script_path"
+	else
+		log_info "Using virtual target: $(basename "${script_path%.sh}")"
+		"$script_path"
+	fi
 
 	unset "ACTIVE_TARGETS[$target]"
 	BUILT_TARGETS[$target]=1
