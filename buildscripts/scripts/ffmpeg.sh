@@ -10,7 +10,7 @@ pushd $build_dir
 
 cpu=armv8-a
 
-../configure \
+NDK_WRAPPER_DISABLED=1 ../configure \
 	--target-os=android \
 	--enable-cross-compile \
 	--cross-prefix=$ndk_triple- \
