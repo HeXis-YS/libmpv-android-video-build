@@ -4,9 +4,9 @@ unset CC CXX # meson wants these unset
 
 $_MESON \
 	-Ddeprecated=false \
-	-Dtests=false \
+	-Ddocs=false \
 	-Dbin=false \
-	-Ddocs=false
+	-Dtests=false
 
 $_NINJA
 DESTDIR="$TARGET_PREFIX_DIR" $_NINJA install

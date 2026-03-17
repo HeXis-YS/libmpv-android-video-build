@@ -1,12 +1,13 @@
 #!/bin/bash -e
+unset CC CXX # meson wants these unset
 : "${TARGET_PREFIX_DIR:?TARGET_PREFIX_DIR is not set}"
 
-$_CMAKE \
-	-DFT_DISABLE_ZLIB=ON \
-	-DFT_DISABLE_BZIP2=ON \
-	-DFT_DISABLE_PNG=ON \
-	-DFT_DISABLE_HARFBUZZ=ON \
-	-DFT_DISABLE_BROTLI=ON
+$_MESON \
+	-Dbrotli=disabled \
+	-Dbzip2=disabled \
+	-Dharfbuzz=disabled \
+	-Dpng=disabled \
+	-Dzlib=disabled
 
 $_NINJA
 DESTDIR="$TARGET_PREFIX_DIR" $_NINJA install
