@@ -1,0 +1,28 @@
+diff --git a/include/openssl/ssl.h.in b/include/openssl/ssl.h.in
+index 9ff923b..35a0799 100644
+--- a/include/openssl/ssl.h.in
++++ b/include/openssl/ssl.h.in
+@@ -201,9 +201,7 @@ extern "C" {
+  * DEPRECATED IN 3.0.0, in favor of OSSL_default_ciphersuites()
+  * Update both macro and function simultaneously
+  */
+-#define TLS_DEFAULT_CIPHERSUITES "TLS_AES_256_GCM_SHA384:"       \
+-                                 "TLS_CHACHA20_POLY1305_SHA256:" \
+-                                 "TLS_AES_128_GCM_SHA256"
++#define TLS_DEFAULT_CIPHERSUITES "TLS_AES_128_GCM_SHA256"
+ #endif
+ /*
+  * As of OpenSSL 1.0.0, ssl_create_cipher_list() in ssl/ssl_ciph.c always
+diff --git a/ssl/ssl_ciph.c b/ssl/ssl_ciph.c
+index 94841ca..007cad6 100644
+--- a/ssl/ssl_ciph.c
++++ b/ssl/ssl_ciph.c
+@@ -2244,7 +2244,5 @@ const char *OSSL_default_cipher_list(void)
+  */
+ const char *OSSL_default_ciphersuites(void)
+ {
+-    return "TLS_AES_256_GCM_SHA384:"
+-           "TLS_CHACHA20_POLY1305_SHA256:"
+-           "TLS_AES_128_GCM_SHA256";
++    return "TLS_AES_128_GCM_SHA256";
+ }
