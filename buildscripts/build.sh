@@ -10,7 +10,7 @@ declare -A BUILT_TARGETS=()
 declare -A ACTIVE_TARGETS=()
 
 prepare_workspace() {
-	rm -rf "$DEPS_DIR" "$PREFIX_DIR" "$BUILD_DIR/output"
+	rm -rf "$PREFIX_DIR" "$BUILD_DIR/output"
 	ensure_dir "$DEPS_DIR" "$PREFIX_DIR"
 }
 

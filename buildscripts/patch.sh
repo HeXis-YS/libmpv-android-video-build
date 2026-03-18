@@ -22,6 +22,7 @@ apply_dep_patches() {
 	pushd "$dep_dir" >/dev/null
 	log_info "Patching $dep_name"
 	git reset --hard
+	git clean -fdx
 	for patch in "${dep_patches[@]}"; do
 		log_info "Applying $patch"
 		git apply "$patch"

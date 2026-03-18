@@ -23,7 +23,30 @@ clone_repo() {
 	git clone --depth 1 --single-branch --no-tags -b "$branch" "$@" "$url" "$dest"
 }
 
+clean_repo() {
+	local repo_dir="$1"
+
+	log_info "Cleaning existing source: $repo_dir"
+	pushd "$repo_dir" >/dev/null
+	git reset --hard
+	git clean -fdx
+	git submodule foreach --recursive git reset --hard
+	git submodule foreach --recursive git clean -fdx
+	popd >/dev/null
+}
+
 queue_clone() {
+	local dest="$1"
+
+	if [[ -d "$dest/.git" ]]; then
+		clean_repo "$dest" &
+		return
+	fi
+	if [[ -e "$dest" ]]; then
+		log_info "Removing non-git source tree: $dest"
+		rm -rf "$dest"
+	fi
+
 	clone_repo "$@" &
 }
 
