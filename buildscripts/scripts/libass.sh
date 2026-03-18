@@ -3,14 +3,8 @@ unset CC CXX # meson wants these unset
 : "${TARGET_PREFIX_DIR:?TARGET_PREFIX_DIR is not set}"
 
 $_MESON \
-	-Dtest=disabled \
-	-Dcompare=disabled \
-	-Dprofile=disabled \
-	-Dfuzz=disabled \
-	-Dcheckasm=disabled \
-	-Dfontconfig=disabled \
+	-Dauto_features=disabled \
 	-Dasm=enabled \
-	-Dlibunibreak=disabled \
 	-Drequire-system-font-provider=false \
 	-Dlarge-tiles=true
 

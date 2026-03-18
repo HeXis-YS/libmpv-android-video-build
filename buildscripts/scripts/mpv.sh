@@ -16,12 +16,13 @@ fi
 
 $_MESON \
 	--prefer-static \
-	--default-library shared \
+	--default-library=shared \
 	-Dgpl=false \
 	-Dcplayer=false \
 	-Dbuild-date=false \
 	-Diconv=disabled \
 	-Dlua=disabled \
+	-Dzlib=disabled \
 	-Dcplugins=disabled \
 	-Dmanpage-build=disabled \
 	$VULKAN_CONFIG

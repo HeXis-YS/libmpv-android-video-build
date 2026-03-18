@@ -8,6 +8,7 @@ if [ -n "$ENABLE_VULKAN" ]; then
 fi
 
 $_MESON \
+	-Dauto_features=disabled \
 	-Ddemos=false \
 	$VULKAN_CONFIG
 
