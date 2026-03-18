@@ -1,9 +1,17 @@
 #!/bin/bash -e
+: "${BUILDSCRIPTS_DIR:?BUILDSCRIPTS_DIR is not set}"
+source "$BUILDSCRIPTS_DIR/include/common.sh"
+
 DAV1D_CONFIG=
 if [ -n "$ENABLE_DAV1D" ]; then
 	DAV1D_CONFIG="--enable-libdav1d --enable-decoder=libdav1d"
 fi
 : "${TARGET_PREFIX_DIR:?TARGET_PREFIX_DIR is not set}"
+
+TLS_CONFIG=--enable-mbedtls
+if [ "$(tls_backend)" = "openssl" ]; then
+	TLS_CONFIG="--enable-openssl --enable-protocol=udp"
+fi
 
 mkdir -p $build_dir
 pushd $build_dir
@@ -65,7 +73,7 @@ NDK_WRAPPER_DISABLED=1 ../configure \
 	--enable-filter=dynaudnorm \
 	--enable-filter=loudnorm \
 	\
-	--enable-mbedtls \
+	$TLS_CONFIG \
 	--enable-network \
 	--enable-protocol=file \
 	--enable-protocol=https \
