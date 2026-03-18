@@ -8,6 +8,7 @@ if [ -n "$ENABLE_DAV1D" ]; then
 fi
 : "${TARGET_PREFIX_DIR:?TARGET_PREFIX_DIR is not set}"
 
+# --enable-protocol=udp is required by OpenSSL or FFmprg 8.1+
 TLS_CONFIG=--enable-mbedtls
 if [ "$(tls_backend)" = "openssl" ]; then
 	TLS_CONFIG="--enable-openssl --enable-protocol=udp"

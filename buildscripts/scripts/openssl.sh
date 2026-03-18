@@ -30,6 +30,9 @@ esac
 
 export ANDROID_NDK_ROOT="$ANDROID_NDK_LATEST_HOME"
 
+# srtp is required by FFmpeg
+# ec, ecx are required by X25519
+
 NDK_WRAPPER_DISABLED=1 ./Configure \
 	"$openssl_target" \
 	"-D__ANDROID_API__=$android_api_level" \
