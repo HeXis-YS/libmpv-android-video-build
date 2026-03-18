@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Dependency versions
 v_mpv=0.41.0
-v_ffmpeg=8.0.1
+v_ffmpeg=8.1
 v_mbedtls=3.6.5
 v_openssl=3.6.1
 v_dav1d=1.5.3
