@@ -33,6 +33,7 @@ include_args+=("-I$compat_include_root")
 
 "$CXX" "$event_loop_src" \
 	-std=c++17 \
+	-fPIC \
 	-shared \
 	-Wl,-z,max-page-size=16384 \
 	"${include_args[@]}" \

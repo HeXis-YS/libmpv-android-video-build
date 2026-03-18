@@ -17,6 +17,7 @@ target_lib_dir="${TARGET_LIB_DIR:-$BUILD_DIR/output/lib/$TARGET_ABI}"
 mkdir -p "$target_lib_dir"
 
 "$CXX" "$helper_src" \
+	-fPIC \
 	-shared \
 	-Wl,-z,max-page-size=16384 \
 	-llog \
