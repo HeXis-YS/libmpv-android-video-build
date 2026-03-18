@@ -25,7 +25,7 @@ tls_backend() {
 		backend="openssl"
 	fi
 	if [[ -z "$backend" ]]; then
-		backend="mbedtls"
+		backend="openssl"
 	fi
 
 	backend="${backend,,}"

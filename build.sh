@@ -9,7 +9,7 @@ export CUSTOM_FFMPEG_OPTIONS="--disable-runtime-cpudetect --disable-sve --disabl
 
 # export ENABLE_VULKAN=1
 # export ENABLE_DAV1D=1
-# export TLS_LIBRARY=openssl
+# export TLS_LIBRARY=mbedtls
 
 # export NDK_WRAPPER_DISABLED=1
 
