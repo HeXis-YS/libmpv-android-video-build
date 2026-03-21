@@ -5,8 +5,7 @@ from pathlib import Path
 
 DEFAULT_APPEND_FLAGS = [
     "-Wno-error", "-Wno-unused-command-line-argument",
-    "-O3", "-fno-stack-protector", "-fno-plt",
-    "-ffast-math", "-lm",
+    "-fno-stack-protector", "-fno-plt",
     "-flto=full", "-fwhole-program-vtables", "-fvirtual-function-elimination", "-Wl,--lto-O3,--lto-partitions=1",
     "-ffunction-sections", "-fdata-sections", "-Wl,--gc-sections",
     "-fPIC",
@@ -18,6 +17,14 @@ DEFAULT_APPEND_FLAGS = [
 def split_env_flags(key):
     value = os.getenv(key, "").strip()
     return value.split() if value else []
+
+
+def find_last_optimization_flag(args):
+    last_flag = None
+    for arg in args:
+        if arg.startswith("-O"):
+            last_flag = arg
+    return last_flag
 
 
 class CompilerWrapper:
@@ -71,9 +78,13 @@ class CompilerWrapper:
 
     def build_append_flags(self):
         append_flags = []
+        env_append_flags = split_env_flags("NDK_WRAPPER_APPEND")
         if os.getenv("NDK_WRAPPER_DISABLED") != "2":
+            effective_opt = find_last_optimization_flag(self.args)
+            if effective_opt != "-O0":
+                append_flags.extend(["-O3", "-ffast-math", "-lm"])
             append_flags.extend(DEFAULT_APPEND_FLAGS)
-        append_flags.extend(split_env_flags("NDK_WRAPPER_APPEND"))
+        append_flags.extend(env_append_flags)
         return append_flags
 
     def parse_custom_flags(self):
