@@ -31,4 +31,4 @@ $_NINJA
 DESTDIR="$TARGET_PREFIX_DIR" $_NINJA install
 
 mkdir -p "$target_lib_dir"
-ln -sf "$TARGET_PREFIX_DIR/lib/libmpv.so" "$target_lib_dir/libmpv.so"
+cp -f "$TARGET_PREFIX_DIR/lib/libmpv.so" "$target_lib_dir/libmpv.so"

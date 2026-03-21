@@ -58,6 +58,9 @@ queue_tls_repo() {
 	mbedtls)
 		queue_clone "mbedtls" "v$v_mbedtls" "https://github.com/Mbed-TLS/mbedtls.git" --recurse-submodules --shallow-submodules
 		;;
+	rustls)
+		queue_clone "rustls" "main" "https://github.com/rustls/rustls-openssl-compat.git"
+		;&
 	openssl)
 		queue_clone "openssl" "openssl-$v_openssl" "https://github.com/openssl/openssl.git"
 		;;

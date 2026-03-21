@@ -9,9 +9,9 @@ fi
 : "${TARGET_PREFIX_DIR:?TARGET_PREFIX_DIR is not set}"
 
 # --enable-protocol=udp is required by OpenSSL or FFmprg 8.1+
-TLS_CONFIG=--enable-mbedtls
-if [ "$(tls_backend)" = "openssl" ]; then
-	TLS_CONFIG="--enable-openssl"
+TLS_CONFIG=--enable-openssl
+if [ "$(tls_backend)" = "mbedtls" ]; then
+	TLS_CONFIG="--enable-mbedtls"
 fi
 
 mkdir -p $build_dir

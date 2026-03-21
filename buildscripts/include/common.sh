@@ -25,16 +25,16 @@ tls_backend() {
 		backend="openssl"
 	fi
 	if [[ -z "$backend" ]]; then
-		backend="openssl"
+		backend="rustls"
 	fi
 
 	backend="${backend,,}"
 	case "$backend" in
-	mbedtls | openssl)
+	mbedtls | openssl | rustls)
 		printf '%s\n' "$backend"
 		;;
 	*)
-		die "Unsupported TLS library: $backend (expected: mbedtls or openssl)"
+		die "Unsupported TLS library: $backend (expected: mbedtls, openssl or rustls)"
 		;;
 	esac
 }
