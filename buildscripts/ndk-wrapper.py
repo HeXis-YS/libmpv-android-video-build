@@ -59,7 +59,7 @@ class CompilerWrapper:
 
     def should_skip_customization(self):
         return (
-            os.getenv("NDK_WRAPPER_DISABLED") or
+            os.getenv("NDK_WRAPPER_DISABLED") == "1" or
             len(self.args) <= 2 or
             "-cc1" in self.args or
             "-cc1as" in self.args or
@@ -71,7 +71,8 @@ class CompilerWrapper:
 
     def build_append_flags(self):
         append_flags = []
-        append_flags.extend(DEFAULT_APPEND_FLAGS)
+        if os.getenv("NDK_WRAPPER_DISABLED") != "2":
+            append_flags.extend(DEFAULT_APPEND_FLAGS)
         append_flags.extend(split_env_flags("NDK_WRAPPER_APPEND"))
         return append_flags
 
