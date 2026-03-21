@@ -2,7 +2,7 @@
 unset CC CXX # meson wants these unset
 : "${TARGET_PREFIX_DIR:?TARGET_PREFIX_DIR is not set}"
 
-$_MESON \
+NDK_WRAPPER_DISABLED=1 $_MESON \
 	-Dauto_features=disabled \
 	-Dmmap=auto
 

@@ -49,7 +49,7 @@ cat >include/mbedtls/mbedtls_config.h <<"END"
 // #define MBEDTLS_ECP_WINDOW_SIZE 7
 END
 
-$_CMAKE \
+NDK_WRAPPER_DISABLED=1 $_CMAKE \
 	-DENABLE_PROGRAMS=OFF \
 	-DENABLE_TESTING=OFF
 

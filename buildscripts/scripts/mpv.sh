@@ -14,7 +14,7 @@ if [[ -n "${ENABLE_VULKAN:-}" ]]; then
 	VULKAN_CONFIG="-Dvulkan=enabled"
 fi
 
-$_MESON \
+NDK_WRAPPER_DISABLED=1 $_MESON \
 	--prefer-static \
 	--default-library=shared \
 	-Dgpl=false \

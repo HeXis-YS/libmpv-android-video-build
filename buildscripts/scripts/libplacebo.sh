@@ -7,7 +7,7 @@ if [ -n "$ENABLE_VULKAN" ]; then
 	VULKAN_CONFIG="-Dvk-proc-addr=enabled"
 fi
 
-$_MESON \
+NDK_WRAPPER_DISABLED=1 $_MESON \
 	-Dauto_features=disabled \
 	-Ddemos=false \
 	$VULKAN_CONFIG

@@ -41,8 +41,8 @@ load_arch() {
 	export NM="llvm-nm"
 	export RANLIB="llvm-ranlib"
 
-	export _CMAKE="env NDK_WRAPPER_DISABLED=1 cmake -B $build_dir -S . -G Ninja -DCMAKE_PREFIX_PATH=$TARGET_PREFIX_DIR -DCMAKE_BUILD_TYPE=Release"
-	export _MESON="env NDK_WRAPPER_DISABLED=1 meson setup $build_dir --cross-file $TARGET_PREFIX_DIR/crossfile.txt"
+	export _CMAKE="cmake -B $build_dir -S . -G Ninja -DCMAKE_PREFIX_PATH=$TARGET_PREFIX_DIR -DCMAKE_BUILD_TYPE=Release"
+	export _MESON="meson setup $build_dir --cross-file $TARGET_PREFIX_DIR/crossfile.txt"
 	export _MAKE="make -j$(nproc)"
 	export _NINJA="ninja -j$(nproc) -C $build_dir"
 
