@@ -9,7 +9,7 @@ fi
 : "${TARGET_PREFIX_DIR:?TARGET_PREFIX_DIR is not set}"
 
 # --enable-protocol=udp is required by OpenSSL or FFmprg 8.1+
-TLS_CONFIG=--enable-openssl
+TLS_CONFIG="--enable-openssl --enable-protocol=udp"
 if [ "$(tls_backend)" = "mbedtls" ]; then
 	TLS_CONFIG="--enable-mbedtls"
 fi
@@ -77,7 +77,6 @@ NDK_WRAPPER_DISABLED=1 ../configure \
 	$TLS_CONFIG \
 	--enable-network \
 	--enable-protocol=file \
-	--enable-protocol=udp \
 	--enable-protocol=https \
 	--enable-protocol=httpproxy \
 	\

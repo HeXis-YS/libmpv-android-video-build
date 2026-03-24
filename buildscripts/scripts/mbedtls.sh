@@ -42,7 +42,6 @@ cat >include/mbedtls/mbedtls_config.h <<"END"
 #define MBEDTLS_SSL_CLI_C
 #define MBEDTLS_SSL_TLS_C
 #define MBEDTLS_THREADING_C
-#define MBEDTLS_VERSION_C
 #define MBEDTLS_X509_USE_C
 #define MBEDTLS_X509_CRT_PARSE_C
 #define MBEDTLS_MPI_WINDOW_SIZE 6
