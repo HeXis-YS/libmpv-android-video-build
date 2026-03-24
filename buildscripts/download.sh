@@ -50,27 +50,10 @@ queue_clone() {
 	clone_repo "$@" &
 }
 
-queue_tls_repo() {
-	local backend
-	backend="$(tls_backend)"
-
-	case "$backend" in
-	mbedtls)
-		queue_clone "mbedtls" "v$v_mbedtls" "https://github.com/Mbed-TLS/mbedtls.git" --recurse-submodules --shallow-submodules
-		;;
-	rustls)
-		queue_clone "rustls" "main" "https://github.com/rustls/rustls-openssl-compat.git"
-		;&
-	openssl)
-		queue_clone "openssl" "openssl-$v_openssl" "https://github.com/openssl/openssl.git"
-		;;
-	esac
-}
-
 queue_default_repos() {
 	queue_clone "mpv" "v$v_mpv" "https://github.com/mpv-player/mpv.git"
 	queue_clone "ffmpeg" "n$v_ffmpeg" "https://github.com/FFmpeg/FFmpeg.git"
-	queue_tls_repo
+	queue_clone "mbedtls" "v$v_mbedtls" "https://github.com/Mbed-TLS/mbedtls.git" --recurse-submodules --shallow-submodules
 	queue_clone "libwebp" "v$v_libwebp" "https://github.com/webmproject/libwebp.git"
 	queue_clone "libass" "$v_libass" "https://github.com/libass/libass.git"
 	queue_clone "freetype" "VER-$v_freetype" "https://gitlab.freedesktop.org/freetype/freetype.git"

@@ -8,12 +8,6 @@ if [ -n "$ENABLE_DAV1D" ]; then
 fi
 : "${TARGET_PREFIX_DIR:?TARGET_PREFIX_DIR is not set}"
 
-# --enable-protocol=udp is required by OpenSSL or FFmprg 8.1+
-TLS_CONFIG="--enable-openssl --enable-protocol=udp"
-if [ "$(tls_backend)" = "mbedtls" ]; then
-	TLS_CONFIG="--enable-mbedtls"
-fi
-
 mkdir -p $build_dir
 pushd $build_dir
 
@@ -74,7 +68,7 @@ NDK_WRAPPER_DISABLED=1 ../configure \
 	--enable-filter=dynaudnorm \
 	--enable-filter=loudnorm \
 	\
-	$TLS_CONFIG \
+	--enable-mbedtls \
 	--enable-network \
 	--enable-protocol=file \
 	--enable-protocol=https \

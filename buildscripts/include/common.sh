@@ -18,27 +18,6 @@ is_enabled() {
 	[[ -n "${!var_name:-}" ]]
 }
 
-tls_backend() {
-	local backend="${TLS_LIBRARY:-}"
-
-	if [[ -z "$backend" && -n "${ENABLE_OPENSSL:-}" ]]; then
-		backend="openssl"
-	fi
-	if [[ -z "$backend" ]]; then
-		backend="rustls"
-	fi
-
-	backend="${backend,,}"
-	case "$backend" in
-	mbedtls | openssl | rustls)
-		printf '%s\n' "$backend"
-		;;
-	*)
-		die "Unsupported TLS library: $backend (expected: mbedtls, openssl or rustls)"
-		;;
-	esac
-}
-
 ensure_dir() {
 	mkdir -p "$@"
 }
